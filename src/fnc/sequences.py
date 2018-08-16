@@ -1,3 +1,5 @@
+"""Functions that operate on sequences.
+"""
 
 from collections import Counter, deque
 from functools import partial

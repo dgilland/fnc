@@ -1,3 +1,5 @@
+"""Functions that operate on mappings.
+"""
 
 from collections.abc import Mapping, Sequence
 

@@ -1,3 +1,5 @@
+"""General utility functions.
+"""
 
 from collections.abc import Iterable, Mapping, Sequence
 from functools import partial, wraps
