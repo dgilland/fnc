@@ -1,4 +1,9 @@
 """Functions that operate on sequences.
+
+Most of these functions return generators so that they will be more efficient
+at processing large datasets. All generator functions will have a ``Yields``
+section in their docstring to easily identify them as generators. Otherwise,
+functions that return concrete values with have a ``Returns`` section instead.
 """
 
 from collections import Counter, deque

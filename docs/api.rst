@@ -5,17 +5,11 @@ API Reference
 
 .. testsetup::
 
+    import fnc
     from fnc import *
 
 
-All public functions are available from the main module.
-
-
-.. code-block:: python
-
-    import fnc
-
-    fnc.<function>
+.. automodule:: fnc
 
 
 Sequences

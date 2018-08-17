@@ -4,7 +4,7 @@ fnc
 |version| |travis| |coveralls| |license|
 
 
-Functional utilities
+Functional programming in Python with generators and other utilities.
 
 
 Links
@@ -23,6 +23,7 @@ Features
 - Shorthand-style iteratees (callbacks) to easily filter and map data.
 - String object-path support for references nested data structures.
 - 100% test coverage.
+- Python 3.4+
 
 
 Quickstart
@@ -33,7 +34,7 @@ Install using pip:
 
 ::
 
-    pip install fnc
+    pip3 install fnc
 
 
 Import the main module:
@@ -145,7 +146,6 @@ Compose multiple functions into a generator pipeline:
 
 
 For more details and examples, please see the full documentation at https://fnc.readthedocs.io.
-
 
 
 .. |version| image:: https://img.shields.io/pypi/v/fnc.svg?style=flat-square
