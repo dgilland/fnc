@@ -235,6 +235,8 @@ def test_omit(case):
          expected={'a': 1}),
     dict(args=(['a', 'b'], {'a': 1, 'b': 2, 'c': 3}),
          expected={'a': 1, 'b': 2}),
+    dict(args=(['a'], {}),
+         expected={}),
     dict(args=([], [1, 2, 3]),
          expected={}),
     dict(args=([0], [1, 2, 3]),

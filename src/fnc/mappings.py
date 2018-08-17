@@ -275,7 +275,7 @@ def pick(keys, obj):
     Examples:
         >>> pick(['a', 'b'], {'a': 1, 'b': 2, 'c': 3}) == {'a': 1, 'b': 2}
         True
-        >>> pick(['a', 'b'], {'b': 2}) == {'a': None, 'b': 2}
+        >>> pick(['a', 'b'], {'b': 2}) == {'b': 2}
         True
 
     Args:
@@ -285,4 +285,9 @@ def pick(keys, obj):
     Returns:
         dict: Dict containg picked properties.
     """
-    return {key: _get(key, obj, default=None) for key in keys}
+    items = []
+    for key in keys:
+        value = _get(key, obj, default=Sentinel)
+        if value is not Sentinel:
+            items.append((key, value))
+    return dict(items)
