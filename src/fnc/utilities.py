@@ -181,7 +181,7 @@ def conformance(source):
         function
     """
     if not isinstance(source, dict):  # pragma: no cover
-        raise TypeError('matches "source" must be a dict')
+        raise TypeError('source must be a dict')
 
     return partial(conforms, source)
 
