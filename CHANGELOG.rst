@@ -2,6 +2,13 @@ Changelog
 =========
 
 
+- Add functions:
+
+  - ``over``
+  - ``overall``
+  - ``overany``
+
+
 v0.1.1 (2018-08-17)
 -------------------
 

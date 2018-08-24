@@ -322,6 +322,66 @@ def matches(source):
     return partial(ismatch, source)
 
 
+def over(*funcs):
+    """Creates a function that calls each function with the provided arguments
+    and returns the results as a ``tuple``.
+
+    Example:
+        >>> minmax = over(min, max)
+        >>> minmax([1, 2, 3, 4])
+        (1, 4)
+
+    Args:
+        *funcs (callable): Functions to call.
+
+    Returns:
+        tuple: Results from each function call
+    """
+    return lambda *args: tuple(func(*args) for func in funcs)
+
+
+def overall(*funcs):
+    """Creates a function that returns ``True`` when all of the given functions
+    return true for the provided arguments.
+
+    Example:
+        >>> is_bool = overall(lambda v: isinstance(v, bool),\
+                              lambda v: v is not 0 and v is not 1)
+        >>> is_bool(False)
+        True
+        >>> is_bool(0)
+        False
+
+    Args:
+        *funcs (callable): Functions to call.
+
+    Returns:
+        bool: Whether call functions evaulate to true.
+    """
+    return lambda *args: all(func(*args) for func in funcs)
+
+
+def overany(*funcs):
+    """Creates a function that returns ``True`` when any of the given functions
+    return true for the provided arguments.
+
+    Example:
+        >>> is_bool_like = overany(lambda v: isinstance(v, bool),\
+                                   lambda v: v in [0, 1])
+        >>> is_bool_like(False)
+        True
+        >>> is_bool_like(0)
+        True
+
+    Args:
+        *funcs (callable): Functions to call.
+
+    Returns:
+        bool: Whether call functions evaulate to true.
+    """
+    return lambda *args: any(func(*args) for func in funcs)
+
+
 def pathgetter(path, default=None):
     """Creates a function that returns the value at path of a given object.
 

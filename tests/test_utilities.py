@@ -163,6 +163,39 @@ def test_matches(case):
 
 
 @parametrize('case', [
+    dict(args=((max, min), [1, 2, 3, 4]),
+         expected=(4, 1)),
+])
+def test_over(case):
+    funcs, *callargs = case['args']
+    assert fnc.over(*funcs)(*callargs) == case['expected']
+
+
+@parametrize('case', [
+    dict(args=((lambda x: x is not None, bool), 1),
+         expected=True),
+    dict(args=((lambda x: x is None, bool), 1),
+         expected=False),
+])
+def test_overall(case):
+    funcs, *callargs = case['args']
+    assert fnc.overall(*funcs)(*callargs) == case['expected']
+
+
+@parametrize('case', [
+    dict(args=((lambda x: x is not None, bool), 1),
+         expected=True),
+    dict(args=((lambda x: x is None, bool), 1),
+         expected=True),
+    dict(args=((lambda x: x is False, lambda y: y == 2), True),
+         expected=False),
+])
+def test_overany(case):
+    funcs, *callargs = case['args']
+    assert fnc.overany(*funcs)(*callargs) == case['expected']
+
+
+@parametrize('case', [
     dict(args=('one.two', {'one': {'two': {'three': 4}}}),
          expected={'three': 4}),
     dict(args=('one.four.three', {'one': {'two': {'three': 4}}}),
