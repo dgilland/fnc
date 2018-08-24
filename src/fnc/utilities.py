@@ -162,6 +162,70 @@ def compose(*funcs):
     return _compose
 
 
+def conformance(source):
+    """Creates a function that does a shallow comparison between a given object
+    and the `source` dictionary using :func:`conforms`.
+
+    Examples:
+        >>> conformance({'a': 1})({'b': 2, 'a': 1})
+        True
+        >>> conformance({'a': 1})({'b': 2, 'a': 2})
+        False
+
+    Args:
+        source (dict): Source object used for comparision.
+
+    Returns:
+        function
+    """
+    if not isinstance(source, dict):  # pragma: no cover
+        raise TypeError('matches "source" must be a dict')
+
+    return partial(conforms, source)
+
+
+def conforms(source, target):
+    """Return whether the `target` object conforms to `source` where `source`
+    is a dictionary that contains key-value pairs which are compared against
+    the same key-values in `target`. If a key-value in `source` is a callable,
+    then that callable is used as a predicate against the corresponding
+    key-value in `target`.
+
+    Examples:
+        >>> conforms({'b': 2}, {'a': 1, 'b': 2})
+        True
+        >>> conforms({'b': 3}, {'a': 1, 'b': 2})
+        False
+        >>> conforms({'b': 2, 'a': lambda a: a > 0}, {'a': 1, 'b': 2})
+        True
+        >>> conforms({'b': 2, 'a': lambda a: a > 0}, {'a': -1, 'b': 2})
+        False
+
+    Args:
+        source (object): Object of path values to match.
+        target (object): Object to compare.
+
+    Returns:
+        bool: Whether `target` is a match or not.
+    """
+    result = True
+    for key, value in source.items():
+        target_value = fnc.get(key, target, default=Sentinel)
+
+        if target_value is Sentinel:
+            target_result = False
+        elif callable(value):
+            target_result = value(target_value)
+        else:
+            target_result = target_value == value
+
+        if not target_result:
+            result = False
+            break
+
+    return result
+
+
 def constant(value):
     """Creates a function that returns a constant `value`.
 
@@ -201,32 +265,6 @@ def identity(value=None, *args, **kwargs):
     return value
 
 
-def ismatch(source, target):
-    """Return whether the `target` object is a subset of `source` where
-    `target` contains the same key-value pairs in `source`.
-
-    Examples:
-        >>> ismatch({'b': 2}, {'a': 1, 'b': 2})
-        True
-        >>> ismatch({'b': 3}, {'a': 1, 'b': 2})
-        False
-
-    Args:
-        source (object): Object of path values to match.
-        target (object): Object to compare.
-
-    Returns:
-        bool: Whether `target` is a match or not.
-    """
-    result = True
-    for key, value in source.items():
-        if fnc.get(key, target, default=Sentinel) != value:
-            result = False
-            break
-
-    return result
-
-
 def iteratee(obj):
     """Return iteratee function based on the type of `obj`.
 
@@ -234,7 +272,7 @@ def iteratee(obj):
 
     - ``callable``: Return as-is.
     - ``None``: Return :func:`identity` function.
-    - ``dict``: Return :func:`matches(obj)` function.
+    - ``dict``: Return :func:`conformance(obj)` function.
     - ``set``: Return :func:`pickgetter(obj)` function.
     - ``tuple``: Return :func:`atgetter(obj)`` function.
     - otherwise: Return :func:`pathgetter(obj)`` function.
@@ -281,7 +319,7 @@ def iteratee(obj):
     elif obj is None:
         return identity
     elif isinstance(obj, dict):
-        return matches(obj)
+        return conformance(obj)
     elif isinstance(obj, set):
         return pickgetter(obj)
     elif isinstance(obj, tuple):
@@ -298,28 +336,6 @@ def noop(*args, **kwargs):
         True
     """
     return
-
-
-def matches(source):
-    """Creates a function that does a shallow comparison between a given object
-    and the `source` dictionary.
-
-    Examples:
-        >>> matches({'a': 1})({'b': 2, 'a': 1})
-        True
-        >>> matches({'a': 1})({'b': 2, 'a': 2})
-        False
-
-    Args:
-        source (dict): Source object used for comparision.
-
-    Returns:
-        function
-    """
-    if not isinstance(source, dict):  # pragma: no cover
-        raise TypeError('matches "source" must be a dict')
-
-    return partial(ismatch, source)
 
 
 def over(*funcs):

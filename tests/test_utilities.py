@@ -80,6 +80,39 @@ def test_compose(case):
 
 
 @parametrize('case', [
+    dict(args=({'age': 40}, {'name': 'fred', 'age': 40}),
+         expected=True),
+    dict(args=({'age': 40, 'active': True}, {'name': 'fred', 'age': 40}),
+         expected=False),
+    dict(args=({}, {}),
+         expected=True),
+    dict(args=({}, {'a': 1}),
+         expected=True),
+])
+def test_conformance(case):
+    expected = case['expected']
+    assert fnc.conformance(case['args'][0])(case['args'][1]) == expected
+
+
+@parametrize('case', [
+    dict(args=({'age': 40}, {'name': 'fred', 'age': 40}),
+         expected=True),
+    dict(args=({'age': 40, 'active': True}, {'name': 'fred', 'age': 40}),
+         expected=False),
+    dict(args=({'age': lambda age: age >= 21}, {'name': 'fred', 'age': 21}),
+         expected=True),
+    dict(args=({'age': lambda age: age >= 21}, {'name': 'fred', 'age': 19}),
+         expected=False),
+    dict(args=({}, {}),
+         expected=True),
+    dict(args=({}, {'a': 1}),
+         expected=True),
+])
+def test_conforms(case):
+    assert fnc.conforms(*case['args']) == case['expected']
+
+
+@parametrize('case', [
     'foo',
     'bar',
     {'a': 1},
@@ -97,20 +130,6 @@ def test_constant(case):
 def test_identity(case):
     kwargs = case.get('kwargs', {})
     assert fnc.identity(*case['args'], **kwargs) == case['expected']
-
-
-@parametrize('case', [
-    dict(args=({'age': 40}, {'name': 'fred', 'age': 40}),
-         expected=True),
-    dict(args=({'age': 40, 'active': True}, {'name': 'fred', 'age': 40}),
-         expected=False),
-    dict(args=({}, {}),
-         expected=True),
-    dict(args=({}, {'a': 1}),
-         expected=True),
-])
-def test_ismatch(case):
-    assert fnc.ismatch(*case['args']) == case['expected']
 
 
 @parametrize('case', [
@@ -146,20 +165,6 @@ def test_iteratee(case):
 ])
 def test_noop(case):
     assert fnc.noop(*case['args'], **case['kwargs']) is None
-
-
-@parametrize('case', [
-    dict(args=({'age': 40}, {'name': 'fred', 'age': 40}),
-         expected=True),
-    dict(args=({'age': 40, 'active': True}, {'name': 'fred', 'age': 40}),
-         expected=False),
-    dict(args=({}, {}),
-         expected=True),
-    dict(args=({}, {'a': 1}),
-         expected=True),
-])
-def test_matches(case):
-    assert fnc.matches(case['args'][0])(case['args'][1]) == case['expected']
 
 
 @parametrize('case', [

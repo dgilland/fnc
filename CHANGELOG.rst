@@ -8,6 +8,13 @@ Changelog
   - ``overall``
   - ``overany``
 
+- Rename functions: (**breaking change**)
+
+  - ``ismatch -> conforms``
+  - ``matches -> conformance``
+
+- Make ``conforms/conformance`` (formerly ``ismatch/matches``) accept callable dictionary values that act as predicates against comparison target. (**breaking change**)
+
 
 v0.1.1 (2018-08-17)
 -------------------

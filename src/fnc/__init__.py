@@ -63,7 +63,7 @@ Note:
 Dict
 ++++
 
-A dictionary-iteratee returns a basic equality comparator that matches source
+A dictionary-iteratee returns a "conforms" comparator that matches source
 key-values to target key-values. Typically, this iteratee is used to filter a
 list of dictionaries by checking if the targets are a superset of the source.
 
@@ -79,7 +79,12 @@ which is the same as:
 
 ::
 
-    x = list(fnc.filter(fnc.matches({'a': 1, 'b': 2}), ...))
+    x = list(fnc.filter(fnc.conformance({'a': 1, 'b': 2}), ...))
+
+Note:
+    When values in the dictionary-iteratee are callables, they will be treated
+    as predicate functions that will be called with the corresponding value in
+    the comparison target.
 
 Set
 +++
@@ -243,12 +248,12 @@ from .utilities import (
     atgetter,
     before,
     compose,
+    conformance,
+    conforms,
     constant,
     identity,
-    ismatch,
     iteratee,
     noop,
-    matches,
     over,
     overall,
     overany,
