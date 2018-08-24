@@ -38,6 +38,7 @@ def after(method):
         method (callable): Function to call afterwards.
     """
     def decorator(func):
+        @wraps(func)
         def decorated(*args, **kwargs):
             result = func(*args, **kwargs)
             method()
@@ -126,6 +127,7 @@ def before(method):
         method (callable): Function to call afterwards.
     """
     def decorator(func):
+        @wraps(func)
         def decorated(*args, **kwargs):
             method()
             return func(*args, **kwargs)
