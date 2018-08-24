@@ -158,6 +158,15 @@ def test_iteratee(case):
 
 
 @parametrize('case', [
+    dict(args=(lambda item: item, True)),
+    dict(args=(lambda item: item, False)),
+])
+def test_negate(case):
+    func, *callargs = case['args']
+    assert fnc.negate(func)(*callargs) == (not func(*callargs))
+
+
+@parametrize('case', [
     dict(args=(), kwargs={}),
     dict(args=(1, 2, 3), kwargs={}),
     dict(args=(), kwargs={'a': 1, 'b': 2}),

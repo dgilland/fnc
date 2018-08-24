@@ -330,6 +330,25 @@ def iteratee(obj):
         return pathgetter(obj)
 
 
+def negate(func):
+    """Creates a function that negates the result of the predicate `func`.
+
+    Examples:
+        >>> not_number = negate(lambda x: isinstance(x, (int, float)))
+        >>> not_number(1)
+        False
+        >>> not_number('1')
+        True
+
+    Args:
+        func (callabe): Function to negate.
+
+    Returns:
+        function
+    """
+    return lambda *args, **kwargs: not func(*args, **kwargs)
+
+
 def noop(*args, **kwargs):
     """A no-operation function.
 

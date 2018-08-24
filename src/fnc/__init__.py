@@ -253,6 +253,7 @@ from .utilities import (
     constant,
     identity,
     iteratee,
+    negate,
     noop,
     over,
     overall,

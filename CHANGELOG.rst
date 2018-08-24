@@ -4,6 +4,7 @@ Changelog
 
 - Add functions:
 
+  - ``negate``
   - ``over``
   - ``overall``
   - ``overany``
