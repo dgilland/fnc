@@ -137,11 +137,25 @@ Compose multiple functions into a generator pipeline:
     get_emails = partial(fnc.map, 'email')
     get_email_domains = partial(fnc.map, lambda email: email.split('@')[1])
 
-    pipe_active_email_domains = fnc.compose(filter_active,
-                                            get_emails,
-                                            get_email_domains)
+    get_active_email_domains = fnc.compose(filter_active,
+                                           get_emails,
+                                           get_email_domains,
+                                           set)
 
-    email_domains = set(pipe_active_email_domains(users))
+    email_domains = get_active_email_domains(users)
+    # {'example.com', 'example.org'}
+
+
+Or do the same thing except using a terser "partial" shorthand:
+
+.. code-block:: python
+
+    get_active_email_domains = fnc.compose((fnc.filter, {'active': True}),
+                                           (fnc.map, 'email'),
+                                           (fnc.map, lambda email: email.split('@')[1]),
+                                           set)
+
+    email_domains = get_active_email_domains(users)
     # {'example.com', 'example.org'}
 
 

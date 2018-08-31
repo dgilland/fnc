@@ -74,6 +74,14 @@ def test_before():
     dict(funcs=(lambda x: x + x, lambda x: x * x),
          args=(5,),
          expected=100),
+    dict(funcs=((fnc.map, tuple), (fnc.map, list), tuple),
+         args=([{'a': 1}, {'b': 2}, {'c': 3}],),
+         expected=(['a'], ['b'], ['c'])),
+    dict(funcs=((fnc.filter, lambda item: item[0][1] > 0),
+                (fnc.map, dict),
+                list),
+         args=([[('a', 1)], [('a', 0)], [('a', 5)], [('a', -2)]],),
+         expected=[{'a': 1}, {'a': 5}]),
 ])
 def test_compose(case):
     assert fnc.compose(*case['funcs'])(*case['args']) == case['expected']

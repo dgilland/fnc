@@ -141,6 +141,17 @@ def compose(*funcs):
     previous. For example, composing the functions ``f()``, ``g()``, and
     ``h()`` produces ``h(g(f()))``.
 
+    Note:
+        Each element in `funcs` can either be a callable or a ``tuple`` where
+        the first element is a callable and the remaining elements are partial
+        arguments. The tuples will be converted to a callable using
+        ``functools.partial(*func)``.
+
+    Note:
+        The "partial" shorthand only supports invoking ``functools.partial``
+        using positional arguments. If keywoard argument partials are needed,
+        then use ``functools.partial`` directly.
+
     Examples:
         >>> mult_5 = lambda x: x * 5
         >>> div_10 = lambda x: x / 10.0
@@ -148,19 +159,30 @@ def compose(*funcs):
         >>> mult_div_pow = compose(sum, mult_5, div_10, pow_2)
         >>> mult_div_pow([1, 2, 3, 4])
         25.0
+        >>> sum_positive_evens = compose((filter, lambda x: x > 0),\
+                                         (filter, lambda x: x % 2 == 0),\
+                                         sum)
+        >>> sum_positive_evens([-1, 1, 2, 3, -5, 0, 6])
+        8
 
     Args:
-        *funcs (function): Function(s) to compose.
+        *funcs (function): Function(s) to compose. If `func` is a tuple,
+            then it will be converted into a partial using
+            ``functools.partial(*func)``.
 
     Returns:
         function: Composed function.
     """
+    funcs = tuple(partial(*func) if isinstance(func, tuple) else func
+                  for func in funcs)
+
     def _compose(*args, **kwargs):
         result = None
         for func in funcs:
             result = func(*args, **kwargs)
             args, kwargs = (result,), {}
         return result
+
     return _compose
 
 

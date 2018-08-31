@@ -17,10 +17,11 @@ Note:
     change/reorganize things which could break that usage.
 
 So what makes this library different than other function libraries for Python?
-Two main features to highlight are:
+Some main features to highlight are:
 
 1. Generators when possible.
 2. Shorthand iteratee support.
+3. Shorthand partial function composition support.
 
 Generators
 ----------
@@ -191,6 +192,36 @@ directly as iteratees.
 Note:
     To reference a mapping that has a ``tuple`` key (e.g. {(1, 2): 'value}),
     use the list-iteratee like ``fnc.map([(1, 2)], ...)``.
+
+
+Function Composition
+--------------------
+
+The primary method for function composition is ``fnc.compose`` combined with
+"partial" shorthand as needed.
+
+What is "partial" shorthand? Instead of passing callables to ``fnc.compose``,
+one can pass a tuple with the same arguments to ``functools.partial``.
+
+::
+
+    count_by_age_over21 = fnc.compose(
+        (fnc.filter, {'age': lambda age: age >= 21}),
+        (fnc.countby, 'age'))
+
+    # is equivalent to...
+    # count_by_age_over21 = fnc.compose(
+    #     partial(fnc.filter, {'age': lambda age: age >= 21}),
+    #     partial(fnc.countby, 'age'))
+
+    x = count_by_age_over21([{'age': 20}, {'age': 21}, {'age': 30},
+                             {'age': 22}, {'age': 21}, {'age': 22}])
+    x == {21: 2, 30: 1, 22: 2}
+
+Note:
+    The "partial" shorthand only support partial using positional arguments. If
+    keywoard argument partials are needed, then use ``functools.partial``
+    directly.
 """
 
 from .__version__ import __version__

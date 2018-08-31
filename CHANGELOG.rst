@@ -2,6 +2,9 @@ Changelog
 =========
 
 
+- compose: Introduce new "partial" shorthand where instead of passing a callable, a ``tuple`` can be given which will then be converted to a callable using ``functools.partial``. For example, instead of ``fnc.compose(partial(fnc.filter, {'active': True}), partial(fnc.map, 'email'))``, one can do ``fnc.compose((fnc.filter, {'active': True}), (fnc.map, 'email'))``.
+
+
 v0.2.0 (2018-08-24)
 -------------------
 
