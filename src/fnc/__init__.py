@@ -219,9 +219,9 @@ one can pass a tuple with the same arguments to ``functools.partial``.
     x == {21: 2, 30: 1, 22: 2}
 
 Note:
-    The "partial" shorthand only support partial using positional arguments. If
-    keywoard argument partials are needed, then use ``functools.partial``
-    directly.
+    The "partial" shorthand only supports invoking ``functools.partial`` using
+    positional arguments. If keyword argument partials are needed, then use
+    ``functools.partial`` directly.
 """
 
 from .__version__ import __version__
