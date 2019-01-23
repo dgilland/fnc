@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+- Add functions:
+
+  - ``differenceby``
+  - ``duplicatesby``
+  - ``intersectionby``
+  - ``unionby``
+
+
 v0.3.0 (2018-08-31)
 -------------------
 

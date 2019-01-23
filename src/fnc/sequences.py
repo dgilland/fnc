@@ -135,22 +135,64 @@ def difference(seq, *seqs):
     Yields:
         Each element in `seq` that doesn't appear in `seqs`.
     """
+    yield from differenceby(None, seq, *seqs)
+
+
+def differenceby(iteratee, seq, *seqs):
+    """
+    Like :func:`difference` except that an `iteratee` is used to modify each element in
+    the sequences. The modified values are then used for comparison.
+
+    Note:
+        This function is like ``set.difference()`` except it works with both hashable
+        and unhashable values and preserves the ordering of the original iterables.
+
+    Examples:
+        >>> list(differenceby('a',
+        ...     [{'a': 1}, {'a': 2}, {'a': 3}], [{'a': 1}], [{'a': 2}])
+        ... )
+        [{'a': 3}]
+        >>> list(differenceby(lambda x: x % 4, [1, 4, 2, 3, 5, 0], [1], [2, 0]))
+        [3]
+
+    Args:
+        iteratee (object): Iteratee applied per iteration.
+        seq (Iterable): Iterable to compute difference against.
+        *seqs (Iterable): Other iterables to compare with.
+
+    Yields:
+        Each element in `seq` that doesn't appear in `seqs`.
+    """
     if len(seqs) == 0:
-        yield from union(seq)
+        yield from unionby(iteratee, seq)
         return
+
+    if iteratee is not None:
+        iteratee = fnc.iteratee(iteratee)
 
     seen = Seen()
 
     for item in seq:
-        if item in seen:
+        if iteratee is not None:
+            value = iteratee(item)
+        else:
+            value = item
+
+        if value in seen:
             continue
 
         found = False
 
-        for other in seqs:
-            if item in other:
-                found = True
-                break
+        for other_seq in seqs:
+            for other_item in other_seq:
+                if iteratee is not None:
+                    other_value = iteratee(other_item)
+                else:
+                    other_value = other_item
+
+                if value == other_value:
+                    found = True
+                    break
 
         if not found:
             yield item
@@ -169,6 +211,8 @@ def duplicates(seq, *seqs):
     Examples:
         >>> list(duplicates([0, 1, 3, 2, 3, 1]))
         [3, 1]
+        >>> list(duplicates([0, 1], [3, 2], [3, 1]))
+        [3, 1]
 
     Args:
         seq (Iterable): Iterable to check for duplicates.
@@ -177,17 +221,45 @@ def duplicates(seq, *seqs):
     Yields:
         Duplicated elements.
     """
+    yield from duplicatesby(None, seq, *seqs)
+
+
+def duplicatesby(iteratee, seq, *seqs):
+    """
+    Like :func:`duplicates` except that an `iteratee` is used to modify each element in
+    the sequences. The modified values are then used for comparison.
+
+    Examples:
+        >>> list(duplicatesby('a', [{'a':1}, {'a':3}, {'a':2}, {'a':3}, {'a':1}]))
+        [{'a': 3}, {'a': 1}]
+
+    Args:
+        iteratee (object): Iteratee applied per iteration.
+        seq (Iterable): Iterable to check for duplicates
+        *seqs (Iterable): Other iterables to compare with.
+
+    Yields:
+        Each element in `seq` that doesn't appear in `seqs`.
+    """
+    if iteratee is not None:
+        iteratee = fnc.iteratee(iteratee)
+
     seen = Seen()
     yielded = Seen()
 
     for item in itertools.chain(seq, *seqs):
-        if item not in seen:
-            seen.add(item)
+        if iteratee is not None:
+            value = iteratee(item)
+        else:
+            value = item
+
+        if value not in seen:
+            seen.add(value)
             continue
 
-        if item in seen and item not in yielded:
+        if value in seen and value not in yielded:
             yield item
-            yielded.add(item)
+            yielded.add(value)
 
 
 def filter(iteratee, seq):
@@ -504,22 +576,68 @@ def intersection(seq, *seqs):
     Yields:
         Elements that itersect.
     """
+    yield from intersectionby(None, seq, *seqs)
+
+
+def intersectionby(iteratee, seq, *seqs):
+    """
+    Like :func:`intersection` except that an `iteratee` is used to modify each element
+    in the sequences. The modified values are then used for comparison.
+
+    Note:
+        This function is like ``set.intersection()`` except it works with both hashable
+        and unhashable values and preserves the ordering of the original iterables.
+
+    Examples:
+        >>> list(intersectionby('a',
+        ...     [{'a': 1}, {'a': 2}, {'a': 3}],
+        ...     [{'a': 1}, {'a': 2}, {'a': 3}, {'a': 4}, {'a': 5}],
+        ...     [{'a': 2}, {'a': 3}]
+        ... ))
+        [{'a': 2}, {'a': 3}]
+
+    Args:
+        iteratee (object): Iteratee applied per iteration.
+        seq (Iterable): Iterable to compute intersection against.
+        *seqs (Iterable): Other iterables to compare with.
+
+    Yields:
+        Elements that itersect.
+    """
+    if iteratee is not None:
+        iteratee = fnc.iteratee(iteratee)
+
     seen = Seen()
 
     for item in seq:
-        if item in seen:
+        if iteratee is not None:
+            value = iteratee(item)
+        else:
+            value = item
+
+        if value in seen:
             continue
 
         found_all = True
 
-        for other in seqs:
-            if item not in other:
+        for other_seq in seqs:
+            found = False
+            for other_item in other_seq:
+                if iteratee is not None:
+                    other_value = iteratee(other_item)
+                else:
+                    other_value = other_item
+
+                if value == other_value:
+                    found = True
+
+            if not found:
                 found_all = False
                 break
 
         if found_all:
             yield item
-            seen.add(item)
+            seen.add(value)
 
 
 def intersperse(value, seq):
@@ -736,13 +854,47 @@ def union(seq, *seqs):
     Yields:
         Each unique element from all iterables.
     """
+    yield from unionby(None, seq, *seqs)
+
+
+def unionby(iteratee, seq, *seqs):
+    """
+    Like :func:`union` except that an `iteratee` is used to modify each element in the
+    sequences. The modified values are then used for comparison.
+
+    Note:
+        This function is like ``set.union()`` except it works with both hashable and
+        unhashable values and preserves the ordering of the original iterables.
+
+    Examples:
+        >>> list(unionby('a',
+        ...     [{'a': 1}, {'a': 2}, {'a': 3}, {'a': 1}, {'a': 2}, {'a': 3}]
+        ... ))
+        [{'a': 1}, {'a': 2}, {'a': 3}]
+
+    Args:
+        iteratee (object): Iteratee applied per iteration.
+        seq (Iterable): Iterable to compute union against.
+        *seqs (Iterable): Other iterables to compare with.
+
+    Yields:
+        Each unique element from all iterables.
+    """
+    if iteratee is not None:
+        iteratee = fnc.iteratee(iteratee)
+
     seen = Seen()
 
     for item in itertools.chain(seq, *seqs):
-        if item not in seen:
+        if iteratee is not None:
+            value = iteratee(item)
+        else:
+            value = item
+
+        if value not in seen:
             yield item
 
-        seen.add(item)
+        seen.add(value)
 
 
 def unzip(seq):

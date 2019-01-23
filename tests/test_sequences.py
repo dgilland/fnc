@@ -89,12 +89,66 @@ def test_difference(case):
 @parametrize(
     "case",
     [
+        dict(
+            args=("a", [{"a": 1}, {"a": 2}, {"a": 3}, {"a": 4}]),
+            expected=[{"a": 1}, {"a": 2}, {"a": 3}, {"a": 4}],
+        ),
+        dict(
+            args=(lambda x: round(x), [1.5, 2.2, 3.7, 4.2], [2.5, 4.9], [3, 5, 6]),
+            expected=[3.7, 4.2],
+        ),
+    ],
+)
+def test_differenceby(case):
+    assert list(fnc.differenceby(*case["args"])) == case["expected"]
+
+
+@parametrize(
+    "case",
+    [
         dict(args=([1, 2, 3, 2, 1, 5, 6, 5, 5, 5],), expected=[2, 1, 5]),
-        dict(args=([1, 2], [3, 2], [1, 5], [6, 5, 5, 5],), expected=[2, 1, 5]),
-    ]
+        dict(args=([1, 2], [3, 2], [1, 5], [6, 5, 5, 5]), expected=[2, 1, 5]),
+    ],
 )
 def test_duplicates(case):
     assert list(fnc.duplicates(*case["args"])) == case["expected"]
+
+
+@parametrize(
+    "case",
+    [
+        dict(
+            args=(
+                "a",
+                [
+                    {"a": 1},
+                    {"a": 2},
+                    {"a": 3},
+                    {"a": 2},
+                    {"a": 1},
+                    {"a": 5},
+                    {"a": 6},
+                    {"a": 5},
+                    {"a": 5},
+                    {"a": 5},
+                ],
+            ),
+            expected=[{"a": 2}, {"a": 1}, {"a": 5}],
+        ),
+        dict(
+            args=(
+                lambda x: round(x),
+                [1.5, 2.3],
+                [3.7, 2.5],
+                [1.1, 5.8],
+                [6.9, 5.1, 5.2, 5.3],
+            ),
+            expected=[2.3, 5.2],
+        ),
+    ],
+)
+def test_duplicatesby(case):
+    assert list(fnc.duplicatesby(*case["args"])) == case["expected"]
 
 
 @parametrize(
@@ -426,6 +480,28 @@ def test_intersection(case):
 @parametrize(
     "case",
     [
+        dict(
+            args=(
+                "a",
+                [{"a": 1}, {"a": 2}, {"a": 3}],
+                [{"a": 101}, {"a": 2}, {"a": 1}, {"a": 10}],
+                [{"a": 2}, {"a": 1}],
+            ),
+            expected=[{"a": 1}, {"a": 2}],
+        ),
+        dict(
+            args=(lambda x: round(x), [1.5, 1.7, 2.1, 2.8], [1, 1, 2, 2]),
+            expected=[1.5],
+        ),
+    ],
+)
+def test_intersectionby(case):
+    assert list(fnc.intersectionby(*case["args"])) == case["expected"]
+
+
+@parametrize(
+    "case",
+    [
         dict(args=(10, []), expected=[]),
         dict(args=(10, [1]), expected=[1]),
         dict(args=(10, [1, 2, 3, 4]), expected=[1, 10, 2, 10, 3, 10, 4]),
@@ -655,6 +731,28 @@ def test_reject(case):
 )
 def test_union(case):
     assert list(fnc.union(*case["args"])) == case["expected"]
+
+
+@parametrize(
+    "case",
+    [
+        dict(
+            args=(
+                "a",
+                [dict(a=1), dict(a=2), dict(a=1), dict(a=3), dict(a=1)],
+                [dict(a=1), dict(a=3), dict(a=2), dict(a=6), dict(a=4)],
+                [dict(a=5)],
+            ),
+            expected=[dict(a=1), dict(a=2), dict(a=3), dict(a=6), dict(a=4), dict(a=5)],
+        ),
+        dict(
+            args=(lambda x: round(x["a"]), [dict(a=1.7), dict(a=2), dict(a=1)]),
+            expected=[dict(a=1.7), dict(a=1)],
+        ),
+    ],
+)
+def test_unionby(case):
+    assert list(fnc.unionby(*case["args"])) == case["expected"]
 
 
 @parametrize(
