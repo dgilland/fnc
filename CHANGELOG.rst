@@ -2,6 +2,9 @@ Changelog
 =========
 
 
+v0.4.0 (2019-01-23)
+-------------------
+
 - Add functions:
 
   - ``differenceby``
