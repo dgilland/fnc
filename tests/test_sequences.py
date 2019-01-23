@@ -86,7 +86,13 @@ def test_difference(case):
     assert list(fnc.difference(*case["args"])) == case["expected"]
 
 
-@parametrize("case", [dict(args=([1, 2, 3, 2, 1, 5, 6, 5, 5, 5],), expected=[2, 1, 5])])
+@parametrize(
+    "case",
+    [
+        dict(args=([1, 2, 3, 2, 1, 5, 6, 5, 5, 5],), expected=[2, 1, 5]),
+        dict(args=([1, 2], [3, 2], [1, 5], [6, 5, 5, 5],), expected=[2, 1, 5]),
+    ]
+)
 def test_duplicates(case):
     assert list(fnc.duplicates(*case["args"])) == case["expected"]
 

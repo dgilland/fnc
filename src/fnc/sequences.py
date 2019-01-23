@@ -159,7 +159,7 @@ def difference(seq, *seqs):
         seen.add(item)
 
 
-def duplicates(seq):
+def duplicates(seq, *seqs):
     """
     Yields unique elements from `seq` that are repeated one or more times.
 
@@ -180,7 +180,7 @@ def duplicates(seq):
     seen = Seen()
     yielded = Seen()
 
-    for item in seq:
+    for item in itertools.chain(seq, *seqs):
         if item not in seen:
             seen.add(item)
             continue
