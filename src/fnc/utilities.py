@@ -18,10 +18,10 @@ from .helpers import Sentinel, number_types
 # This is used to split a deep path string into dict keys or list indexex.
 # This matches "." as delimiter and "[<key>]" as delimiter while keeping the
 # "[<key>]" as an item.
-RE_PATH_KEY_DELIM = re.compile(r'(?<!\\)\.|(\[.*?\])')
+RE_PATH_KEY_DELIM = re.compile(r"(?<!\\)\.|(\[.*?\])")
 
 # Matches on path strings like "[<key>]".
-RE_PATH_GET_ITEM = re.compile(r'^\[.*?\]$')
+RE_PATH_GET_ITEM = re.compile(r"^\[.*?\]$")
 
 
 def after(method):
@@ -37,13 +37,16 @@ def after(method):
     Args:
         method (callable): Function to call afterwards.
     """
+
     def decorator(func):
         @wraps(func)
         def decorated(*args, **kwargs):
             result = func(*args, **kwargs)
             method()
             return result
+
         return decorated
+
     return decorator
 
 
@@ -82,9 +85,9 @@ def aspath(value):
     if not isinstance(value, str):
         return [value]
 
-    return [_parse_path_token(token)
-            for token in RE_PATH_KEY_DELIM.split(value)
-            if token]
+    return [
+        _parse_path_token(token) for token in RE_PATH_KEY_DELIM.split(value) if token
+    ]
 
 
 def _parse_path_token(token):
@@ -126,12 +129,15 @@ def before(method):
     Args:
         method (callable): Function to call afterwards.
     """
+
     def decorator(func):
         @wraps(func)
         def decorated(*args, **kwargs):
             method()
             return func(*args, **kwargs)
+
         return decorated
+
     return decorator
 
 
@@ -173,8 +179,7 @@ def compose(*funcs):
     Returns:
         function: Composed function.
     """
-    funcs = tuple(partial(*func) if isinstance(func, tuple) else func
-                  for func in funcs)
+    funcs = tuple(partial(*func) if isinstance(func, tuple) else func for func in funcs)
 
     def _compose(*args, **kwargs):
         result = None
@@ -203,7 +208,7 @@ def conformance(source):
         function
     """
     if not isinstance(source, dict):  # pragma: no cover
-        raise TypeError('source must be a dict')
+        raise TypeError("source must be a dict")
 
     return partial(conforms, source)
 
@@ -506,9 +511,7 @@ def random(start=0, stop=1, floating=False):
         >>> isinstance(random(floating=True), float)
         True
     """
-    floating = (isinstance(start, float) or
-                isinstance(stop, float) or
-                floating is True)
+    floating = isinstance(start, float) or isinstance(stop, float) or floating is True
 
     if stop < start:
         stop, start = start, stop
@@ -521,13 +524,16 @@ def random(start=0, stop=1, floating=False):
     return rnd
 
 
-def retry(attempts=3, *,
-          delay=0.5,
-          max_delay=150.0,
-          scale=2.0,
-          jitter=0,
-          exceptions=(Exception,),
-          on_exception=None):
+def retry(
+    attempts=3,
+    *,
+    delay=0.5,
+    max_delay=150.0,
+    scale=2.0,
+    jitter=0,
+    exceptions=(Exception,),
+    on_exception=None
+):
     """Decorator that retries a function multiple times if it raises an
     exception with an optional delay between each attempt.
     When a `delay` is supplied, there will be a sleep period in between retry
@@ -577,32 +583,39 @@ def retry(attempts=3, *,
         exceptions = (exceptions,)
 
     if not isinstance(attempts, int) or attempts <= 0:
-        raise ValueError('attempts must be an integer greater than 0')
+        raise ValueError("attempts must be an integer greater than 0")
 
     if not isinstance(delay, number_types) or delay < 0:
-        raise ValueError('delay must be a number greater than or equal to 0')
+        raise ValueError("delay must be a number greater than or equal to 0")
 
     if not isinstance(max_delay, number_types) or max_delay < 0:
-        raise ValueError('scale must be a number greater than or equal to 0')
+        raise ValueError("scale must be a number greater than or equal to 0")
 
     if not isinstance(scale, number_types) or scale <= 0:
-        raise ValueError('scale must be a number greater than 0')
+        raise ValueError("scale must be a number greater than 0")
 
-    if (not isinstance(jitter, number_types + (tuple,)) or
-            (isinstance(jitter, number_types) and jitter < 0) or
-            (isinstance(jitter, tuple) and (
-                len(jitter) != 2 or
-                not all(isinstance(jit, number_types) for jit in jitter)))):
+    if (
+        not isinstance(jitter, number_types + (tuple,))
+        or (isinstance(jitter, number_types) and jitter < 0)
+        or (
+            isinstance(jitter, tuple)
+            and (
+                len(jitter) != 2
+                or not all(isinstance(jit, number_types) for jit in jitter)
+            )
+        )
+    ):
         raise ValueError(
-            'jitter must be a number greater than 0 or a 2-item tuple of '
-            'numbers')
+            "jitter must be a number greater than 0 or a 2-item tuple of " "numbers"
+        )
 
-    if (not isinstance(exceptions, tuple) or
-            not all(issubclass(exc, Exception) for exc in exceptions)):
-        raise TypeError('exceptions must be a tuple of Exception types')
+    if not isinstance(exceptions, tuple) or not all(
+        issubclass(exc, Exception) for exc in exceptions
+    ):
+        raise TypeError("exceptions must be a tuple of Exception types")
 
     if on_exception and not callable(on_exception):
-        raise TypeError('on_exception must be a callable')
+        raise TypeError("on_exception must be a callable")
 
     if jitter and not isinstance(jitter, tuple):
         jitter = (0, jitter)
@@ -618,7 +631,7 @@ def retry(attempts=3, *,
                     return func(*args, **kargs)
                 except exceptions as exc:
                     if on_exception:
-                        exc.retry = {'attempt': attempt}
+                        exc.retry = {"attempt": attempt}
                         on_exception(exc)
 
                     if attempt == attempts:
@@ -637,5 +650,7 @@ def retry(attempts=3, *,
 
                     # Scale after first iteration.
                     delay_time *= scale
+
         return decorated
+
     return decorator

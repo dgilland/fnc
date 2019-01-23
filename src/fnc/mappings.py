@@ -129,7 +129,7 @@ def _get(key, obj, *, default=NotSet):
             pass
 
     if default is NotSet:
-        raise KeyError('Key {!r} not found in {!r}'.format(obj, key))
+        raise KeyError("Key {!r} not found in {!r}".format(obj, key))
 
     return default
 

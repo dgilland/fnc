@@ -1,4 +1,3 @@
-
 from collections.abc import Iterable, Mapping, Sequence
 from decimal import Decimal
 import types
@@ -13,6 +12,7 @@ class _NotSet(object):
     """Represents an unset value. Used to differeniate between an explicit
     ``None`` and an unset value.
     """
+
     def __bool__(self):  # pragma: no cover
         return False
 
@@ -26,6 +26,7 @@ class Seen(object):
     unhashable values by storing hashable items in a ``set`` and unhashable
     items in a ``list`` and then checking both containers for existence.
     """
+
     def __init__(self):
         self.hashable = set()
         self.unhashable = []
@@ -56,9 +57,11 @@ def isgenerator(value):
     being to determine whether `value` will be exhausted if it is iterated
     over.
     """
-    return (isinstance(value, types.GeneratorType) or
-            (hasattr(value, '__iter__') and hasattr(value, '__next__') and
-             not hasattr(value, '__getitem__')))
+    return isinstance(value, types.GeneratorType) or (
+        hasattr(value, "__iter__")
+        and hasattr(value, "__next__")
+        and not hasattr(value, "__getitem__")
+    )
 
 
 def iterate(mapping):
@@ -73,15 +76,13 @@ def iterate(mapping):
       attributes, then ``(key, mapping[key])`` will be used.
     - Otherwise, `iter(mapping)` will be returned.
     """
-    if (isinstance(mapping, Mapping) or
-            callable(getattr(mapping, 'items', None))):
+    if isinstance(mapping, Mapping) or callable(getattr(mapping, "items", None)):
         return mapping.items()
 
     if isinstance(mapping, Sequence):
         return enumerate(mapping)
 
-    if (callable(getattr(mapping, 'keys', None)) and
-            hasattr(mapping, '__getitem__')):
+    if callable(getattr(mapping, "keys", None)) and hasattr(mapping, "__getitem__"):
         return ((key, mapping[key]) for key in mapping.keys())
 
     return iter(mapping)

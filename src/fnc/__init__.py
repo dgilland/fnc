@@ -237,7 +237,7 @@ from .mappings import (
     mapvalues,
     merge,
     omit,
-    pick
+    pick,
 )
 
 from .sequences import (
@@ -270,7 +270,7 @@ from .sequences import (
     union,
     unzip,
     without,
-    xor
+    xor,
 )
 
 from .utilities import (
@@ -292,5 +292,5 @@ from .utilities import (
     pathgetter,
     pickgetter,
     random,
-    retry
+    retry,
 )

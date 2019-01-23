@@ -1,5 +1,3 @@
-
-
 class AttrObject(object):
     def __init__(self, **attrs):
         for attr, value in attrs.items():

@@ -35,7 +35,7 @@ def chunk(size, seq):
         list: Chunked groups.
     """
     if not isinstance(size, int) or size <= 0:  # pragma: no cover
-        raise ValueError('size must be an integer greater than zero')
+        raise ValueError("size must be an integer greater than zero")
 
     group = []
 
@@ -253,9 +253,7 @@ def findindex(iteratee, seq):
         int: Index of found item or ``-1`` if not found.
     """
     iteratee = fnc.iteratee(iteratee)
-    return next(
-        (i for i, value in enumerate(seq) if iteratee(value)),
-        -1)
+    return next((i for i, value in enumerate(seq) if iteratee(value)), -1)
 
 
 def findlast(iteratee, seq):
@@ -300,8 +298,8 @@ def findlastindex(iteratee, seq):
     """
     iteratee = fnc.iteratee(iteratee)
     return next(
-        (i for i, value in reversed(tuple(enumerate(seq))) if iteratee(value)),
-        -1)
+        (i for i, value in reversed(tuple(enumerate(seq))) if iteratee(value)), -1
+    )
 
 
 def flatten(*seqs):
