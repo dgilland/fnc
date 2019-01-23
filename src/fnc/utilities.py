@@ -25,7 +25,8 @@ RE_PATH_GET_ITEM = re.compile(r"^\[.*?\]$")
 
 
 def after(method):
-    """Decorator that calls `method` after the decorated function is called.
+    """
+    Decorator that calls `method` after the decorated function is called.
 
     Examples:
         >>> def a(): print('a')
@@ -51,7 +52,8 @@ def after(method):
 
 
 def aspath(value):
-    """Converts value to an object path list.
+    """
+    Converts value to an object path list.
 
     Examples:
         >>> aspath('a.b.c')
@@ -100,7 +102,8 @@ def _parse_path_token(token):
 
 
 def atgetter(paths):
-    """Creates a function that returns the values at paths of a given object.
+    """
+    Creates a function that returns the values at paths of a given object.
 
     Examples:
         >>> get_id_name = atgetter(['data.id', 'data.name'])
@@ -117,7 +120,8 @@ def atgetter(paths):
 
 
 def before(method):
-    """Decorator that calls `method` before the decorated function is called.
+    """
+    Decorator that calls `method` before the decorated function is called.
 
     Examples:
         >>> def a(): print('a')
@@ -142,21 +146,20 @@ def before(method):
 
 
 def compose(*funcs):
-    """Create a function that is the composition of the provided functions,
-    where each successive invocation is supplied the return value of the
-    previous. For example, composing the functions ``f()``, ``g()``, and
-    ``h()`` produces ``h(g(f()))``.
+    """
+    Create a function that is the composition of the provided functions, where each
+    successive invocation is supplied the return value of the previous. For example,
+    composing the functions ``f()``, ``g()``, and ``h()`` produces ``h(g(f()))``.
 
     Note:
-        Each element in `funcs` can either be a callable or a ``tuple`` where
-        the first element is a callable and the remaining elements are partial
-        arguments. The tuples will be converted to a callable using
-        ``functools.partial(*func)``.
+        Each element in `funcs` can either be a callable or a ``tuple`` where the first
+        element is a callable and the remaining elements are partial arguments. The
+        tuples will be converted to a callable using ``functools.partial(*func)``.
 
     Note:
-        The "partial" shorthand only supports invoking ``functools.partial``
-        using positional arguments. If keywoard argument partials are needed,
-        then use ``functools.partial`` directly.
+        The "partial" shorthand only supports invoking ``functools.partial`` using
+        positional arguments. If keywoard argument partials are needed, then use
+        ``functools.partial`` directly.
 
     Examples:
         >>> mult_5 = lambda x: x * 5
@@ -172,9 +175,8 @@ def compose(*funcs):
         8
 
     Args:
-        *funcs (function): Function(s) to compose. If `func` is a tuple,
-            then it will be converted into a partial using
-            ``functools.partial(*func)``.
+        *funcs (function): Function(s) to compose. If `func` is a tuple, then it will be
+            converted into a partial using ``functools.partial(*func)``.
 
     Returns:
         function: Composed function.
@@ -192,8 +194,9 @@ def compose(*funcs):
 
 
 def conformance(source):
-    """Creates a function that does a shallow comparison between a given object
-    and the `source` dictionary using :func:`conforms`.
+    """
+    Creates a function that does a shallow comparison between a given object and the
+    `source` dictionary using :func:`conforms`.
 
     Examples:
         >>> conformance({'a': 1})({'b': 2, 'a': 1})
@@ -214,11 +217,11 @@ def conformance(source):
 
 
 def conforms(source, target):
-    """Return whether the `target` object conforms to `source` where `source`
-    is a dictionary that contains key-value pairs which are compared against
-    the same key-values in `target`. If a key-value in `source` is a callable,
-    then that callable is used as a predicate against the corresponding
-    key-value in `target`.
+    """
+    Return whether the `target` object conforms to `source` where `source` is a
+    dictionary that contains key-value pairs which are compared against the same
+    key-values in `target`. If a key-value in `source` is a callable, then that callable
+    is used as a predicate against the corresponding key-value in `target`.
 
     Examples:
         >>> conforms({'b': 2}, {'a': 1, 'b': 2})
@@ -256,7 +259,8 @@ def conforms(source, target):
 
 
 def constant(value):
-    """Creates a function that returns a constant `value`.
+    """
+    Creates a function that returns a constant `value`.
 
     Examples:
         >>> pi = constant(3.14)
@@ -273,7 +277,8 @@ def constant(value):
 
 
 def identity(value=None, *args, **kwargs):
-    """Return the first argument provided.
+    """
+    Return the first argument provided.
 
     Examples:
         >>> identity(1)
@@ -295,7 +300,8 @@ def identity(value=None, *args, **kwargs):
 
 
 def iteratee(obj):
-    """Return iteratee function based on the type of `obj`.
+    """
+    Return iteratee function based on the type of `obj`.
 
     The iteratee object can be one of the following:
 
@@ -358,7 +364,8 @@ def iteratee(obj):
 
 
 def negate(func):
-    """Creates a function that negates the result of the predicate `func`.
+    """
+    Creates a function that negates the result of the predicate `func`.
 
     Examples:
         >>> not_number = negate(lambda x: isinstance(x, (int, float)))
@@ -377,7 +384,8 @@ def negate(func):
 
 
 def noop(*args, **kwargs):
-    """A no-operation function.
+    """
+    A no-operation function.
 
     Examples:
         >>> noop(1, 2, 3) is None
@@ -387,8 +395,9 @@ def noop(*args, **kwargs):
 
 
 def over(*funcs):
-    """Creates a function that calls each function with the provided arguments
-    and returns the results as a ``tuple``.
+    """
+    Creates a function that calls each function with the provided arguments and returns
+    the results as a ``tuple``.
 
     Example:
         >>> minmax = over(min, max)
@@ -405,8 +414,9 @@ def over(*funcs):
 
 
 def overall(*funcs):
-    """Creates a function that returns ``True`` when all of the given functions
-    return true for the provided arguments.
+    """
+    Creates a function that returns ``True`` when all of the given functions return true
+    for the provided arguments.
 
     Example:
         >>> is_bool = overall(lambda v: isinstance(v, bool),\
@@ -426,8 +436,9 @@ def overall(*funcs):
 
 
 def overany(*funcs):
-    """Creates a function that returns ``True`` when any of the given functions
-    return true for the provided arguments.
+    """
+    Creates a function that returns ``True`` when any of the given functions return true
+    for the provided arguments.
 
     Example:
         >>> is_bool_like = overany(lambda v: isinstance(v, bool),\
@@ -447,7 +458,8 @@ def overany(*funcs):
 
 
 def pathgetter(path, default=None):
-    """Creates a function that returns the value at path of a given object.
+    """
+    Creates a function that returns the value at path of a given object.
 
     Examples:
         >>> get_data = pathgetter('data')
@@ -472,7 +484,8 @@ def pathgetter(path, default=None):
 
 
 def pickgetter(keys):
-    """Creates a function that returns the value at path of a given object.
+    """
+    Creates a function that returns the value at path of a given object.
 
     Examples:
         >>> pick_ab = pickgetter(['a', 'b'])
@@ -489,16 +502,17 @@ def pickgetter(keys):
 
 
 def random(start=0, stop=1, floating=False):
-    """Produces a random number between `start` and `stop` (inclusive). If only
-    one argument is provided a number between 0 and the given number will be
-    returned. If floating is truthy or either `start` or `stop` are floats a
-    floating-point number will be returned instead of an integer.
+    """
+    Produces a random number between `start` and `stop` (inclusive). If only one
+    argument is provided a number between 0 and the given number will be returned. If
+    floating is truthy or either `start` or `stop` are floats a floating-point number
+    will be returned instead of an integer.
 
     Args:
         start (int): Minimum value.
         stop (int): Maximum value.
-        floating (bool, optional): Whether to force random value to ``float``.
-            Default is ``False``.
+        floating (bool, optional): Whether to force random value to ``float``. Default
+            is ``False``.
 
     Returns:
         int|float: Random value.
@@ -534,37 +548,35 @@ def retry(
     exceptions=(Exception,),
     on_exception=None
 ):
-    """Decorator that retries a function multiple times if it raises an
-    exception with an optional delay between each attempt.
-    When a `delay` is supplied, there will be a sleep period in between retry
-    attempts. The first delay time will always be equal to `delay`. After
-    subsequent retries, the delay time will be scaled by `scale` up to
+    """
+    Decorator that retries a function multiple times if it raises an exception with an
+    optional delay between each attempt. When a `delay` is supplied, there will be a
+    sleep period in between retry attempts. The first delay time will always be equal to
+    `delay`. After subsequent retries, the delay time will be scaled by `scale` up to
     `max_delay`. If `max_delay` is ``0``, then `delay` can increase unbounded.
 
     Args:
         attempts (int, optional): Number of retry attempts. Defaults to ``3``.
-        delay (int|float, optional): Base amount of seconds to sleep between
-            retry attempts. Defaults to ``0.5``.
-        max_delay (int|float, optional): Maximum number of seconds to sleep
-            between retries. Is ignored when equal to ``0``. Defaults to
-            ``150.0`` (2.5 minutes).
-        scale (int|float, optional): Scale factor to increase `delay` after
-            first retry fails. Defaults to ``2.0``.
-        jitter (int|float|tuple, optional): Random jitter to add to `delay`
-            time. Can be a positive number or 2-item tuple of numbers
-            representing the random range to choose from. When a number is
-            given, the random range will be from ``[0, jitter]``. When jitter
-            is a float or contains a float, then a random float will be chosen;
-            otherwise, a random integer will be selected. Defaults to ``0``
-            which disables jitter.
-        exceptions (tuple, optional): Tuple of exceptions that trigger a retry
-            attempt. Exceptions not in the tuple will be ignored. Defaults to
-            ``(Exception,)`` (all exceptions).
-        on_exception (function, optional): Function that is called when a
-            retryable exception is caught. It is invoked with
-            ``on_exception(exc, attempt)`` where ``exc`` is the caught
-            exception and ``attempt`` is the attempt count. All arguments are
-            optional. Defaults to ``None``.
+        delay (int|float, optional): Base amount of seconds to sleep between retry
+            attempts. Defaults to ``0.5``.
+        max_delay (int|float, optional): Maximum number of seconds to sleep between
+            retries. Is ignored when equal to ``0``. Defaults to ``150.0``
+            (2.5 minutes).
+        scale (int|float, optional): Scale factor to increase `delay` after first retry
+            fails. Defaults to ``2.0``.
+        jitter (int|float|tuple, optional): Random jitter to add to `delay` time. Can be
+            a positive number or 2-item tuple of numbers representing the random range
+            to choose from. When a number is given, the random range will be from
+            ``[0, jitter]``. When jitter is a float or contains a float, then a random
+            float will be chosen; otherwise, a random integer will be selected. Defaults
+            to ``0`` which disables jitter.
+        exceptions (tuple, optional): Tuple of exceptions that trigger a retry attempt.
+            Exceptions not in the tuple will be ignored. Defaults to ``(Exception,)``
+            (all exceptions).
+        on_exception (function, optional): Function that is called when a retryable
+            exception is caught. It is invoked with ``on_exception(exc, attempt)`` where
+            ``exc`` is the caught exception and ``attempt`` is the attempt count. All
+            arguments are optional. Defaults to ``None``.
 
     Example:
 

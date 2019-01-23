@@ -9,8 +9,9 @@ Sentinel = object()
 
 
 class _NotSet(object):
-    """Represents an unset value. Used to differeniate between an explicit
-    ``None`` and an unset value.
+    """
+    Represents an unset value. Used to differeniate between an explicit ``None`` and an
+    unset value.
     """
 
     def __bool__(self):  # pragma: no cover
@@ -21,10 +22,11 @@ NotSet = _NotSet()
 
 
 class Seen(object):
-    """A "seen" container for keeping track of elements of a sequence that have
-    been encountered before. It is optimized to work with both hashable and
-    unhashable values by storing hashable items in a ``set`` and unhashable
-    items in a ``list`` and then checking both containers for existence.
+    """
+    A "seen" container for keeping track of elements of a sequence that have been
+    encountered before. It is optimized to work with both hashable and unhashable values
+    by storing hashable items in a ``set`` and unhashable items in a ``list`` and then
+    checking both containers for existence.
     """
 
     def __init__(self):
@@ -53,9 +55,9 @@ def iscollection(value):
 
 
 def isgenerator(value):
-    """Return whether `value` is a generator or generator-like. The purpose
-    being to determine whether `value` will be exhausted if it is iterated
-    over.
+    """
+    Return whether `value` is a generator or generator-like. The purpose being to
+    determine whether `value` will be exhausted if it is iterated over.
     """
     return isinstance(value, types.GeneratorType) or (
         hasattr(value, "__iter__")
@@ -65,15 +67,15 @@ def isgenerator(value):
 
 
 def iterate(mapping):
-    """Attempt to iterate over `mapping` such that key-values pairs are yielded
-    per iteration. For dictionaries and other mappings, this would be the keys
-    and values. For lists and other sequences, this would be the indexes and
-    values. For other non-standard object types, some duck-typing will be used:
+    """
+    Attempt to iterate over `mapping` such that key-values pairs are yielded per
+    iteration. For dictionaries and other mappings, this would be the keys and values.
+    For lists and other sequences, this would be the indexes and values. For other
+    non-standard object types, some duck-typing will be used:
 
-    - If `mapping` has callable ``mapping.items()`` attribute, it will be
-      used.
-    - If `mapping` has callable ``mapping.keys()`` and ``__getitem__``
-      attributes, then ``(key, mapping[key])`` will be used.
+    - If `mapping` has callable ``mapping.items()`` attribute, it will be used.
+    - If `mapping` has callable ``mapping.keys()`` and ``__getitem__`` attributes, then
+      ``(key, mapping[key])`` will be used.
     - Otherwise, `iter(mapping)` will be returned.
     """
     if isinstance(mapping, Mapping) or callable(getattr(mapping, "items", None)):
