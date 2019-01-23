@@ -168,9 +168,11 @@ def compose(*funcs):
         >>> mult_div_pow = compose(sum, mult_5, div_10, pow_2)
         >>> mult_div_pow([1, 2, 3, 4])
         25.0
-        >>> sum_positive_evens = compose((filter, lambda x: x > 0),\
-                                         (filter, lambda x: x % 2 == 0),\
-                                         sum)
+        >>> sum_positive_evens = compose(
+        ...     (filter, lambda x: x > 0),
+        ...     (filter, lambda x: x % 2 == 0),
+        ...     sum
+        ... )
         >>> sum_positive_evens([-1, 1, 2, 3, -5, 0, 6])
         8
 
@@ -349,10 +351,10 @@ def iteratee(obj):
     Returns:
         function: Iteratee function.
     """
-    if callable(obj):
-        return obj
-    elif obj is None:
+    if obj is None:
         return identity
+    elif callable(obj):
+        return obj
     elif isinstance(obj, dict):
         return conformance(obj)
     elif isinstance(obj, set):
@@ -419,8 +421,10 @@ def overall(*funcs):
     for the provided arguments.
 
     Example:
-        >>> is_bool = overall(lambda v: isinstance(v, bool),\
-                              lambda v: v is not 0 and v is not 1)
+        >>> is_bool = overall(
+        ...     lambda v: isinstance(v, bool),
+        ...     lambda v: v is not 0 and v is not 1
+        ... )
         >>> is_bool(False)
         True
         >>> is_bool(0)
@@ -441,8 +445,10 @@ def overany(*funcs):
     for the provided arguments.
 
     Example:
-        >>> is_bool_like = overany(lambda v: isinstance(v, bool),\
-                                   lambda v: v in [0, 1])
+        >>> is_bool_like = overany(
+        ...     lambda v: isinstance(v, bool),
+        ...     lambda v: v in [0, 1]
+        ... )
         >>> is_bool_like(False)
         True
         >>> is_bool_like(0)

@@ -117,9 +117,8 @@ def difference(seq, *seqs):
     Yields elements from `seq` that are not in `seqs`.
 
     Note:
-        This function is like ``set.difference()`` except that this function
-        works with both hashable and unhashable values and preserves the
-        ordering of the original iterables.
+        This function is like ``set.difference()`` except it works with both hashable
+        and unhashable values and preserves the ordering of the original iterables.
 
     Examples:
         >>> list(difference([1, 2, 3], [1], [2]))
@@ -172,7 +171,8 @@ def duplicates(seq, *seqs):
         [3, 1]
 
     Args:
-        seq (Iterable): Iterable to process.
+        seq (Iterable): Iterable to check for duplicates.
+        *seqs (Iterable): Other iterables to compare with.
 
     Yields:
         Duplicated elements.
@@ -196,8 +196,8 @@ def filter(iteratee, seq):
     truthy for.
 
     Note:
-        This function is like the builtin ``filter`` except that it converts
-        `iteratee` into a fnc-style predicate.
+        This function is like the builtin ``filter`` except it converts `iteratee` into
+        a fnc-style predicate.
 
     Examples:
         >>> result = filter({'a': 1}, [{'a': 1}, {'b': 2}, {'a': 1, 'b': 3}])
@@ -267,8 +267,8 @@ def findindex(iteratee, seq):
 
 def findlast(iteratee, seq):
     """
-    This function is like :func:`find` except that it iterates over elements of `seq`
-    from right to left.
+    This function is like :func:`find` except it iterates over elements of `seq` from
+    right to left.
 
     Examples:
         >>> findlast(lambda x: x >= 3, [1, 2, 3, 4])
@@ -363,26 +363,27 @@ def flattendeep(*seqs):
 
 def groupall(iteratees, seq):
     """
-    This function is like :func:`groupby` except that it supports nested grouping by
-    multiple iteratees. If only a single iteratee is given, it is like calling
-    :func:`groupby`.
+    This function is like :func:`groupby` except it supports nested grouping by multiple
+    iteratees. If only a single iteratee is given, it is like calling :func:`groupby`.
 
     Examples:
-        >>> result = groupall(\
-            ['shape', 'qty'],\
-            [{'shape': 'square', 'color': 'red', 'qty': 5},\
-             {'shape': 'square', 'color': 'blue', 'qty': 10},\
-             {'shape': 'square', 'color': 'orange', 'qty': 5},\
-             {'shape': 'circle', 'color': 'yellow', 'qty': 5},\
-             {'shape': 'circle', 'color': 'pink', 'qty': 10},\
-             {'shape': 'oval', 'color': 'purple', 'qty': 5}])
-        >>> expected = {\
-            'square': {5: [{'shape': 'square', 'color': 'red', 'qty': 5},\
-                           {'shape': 'square', 'color': 'orange', 'qty': 5}],\
-                       10: [{'shape': 'square', 'color': 'blue', 'qty': 10}]},\
-            'circle': {5: [{'shape': 'circle', 'color': 'yellow', 'qty': 5}],\
-                       10: [{'shape': 'circle', 'color': 'pink', 'qty': 10}]},\
-            'oval': {5: [{'shape': 'oval', 'color': 'purple', 'qty': 5}]}}
+        >>> result = groupall(
+        ...     ['shape', 'qty'],
+        ...     [{'shape': 'square', 'color': 'red', 'qty': 5},
+        ...      {'shape': 'square', 'color': 'blue', 'qty': 10},
+        ...      {'shape': 'square', 'color': 'orange', 'qty': 5},
+        ...      {'shape': 'circle', 'color': 'yellow', 'qty': 5},
+        ...      {'shape': 'circle', 'color': 'pink', 'qty': 10},
+        ...      {'shape': 'oval', 'color': 'purple', 'qty': 5}]
+        ... )
+        >>> expected = {
+        ...     'square': {5: [{'shape': 'square', 'color': 'red', 'qty': 5},
+        ...                    {'shape': 'square', 'color': 'orange', 'qty': 5}],
+        ...                10: [{'shape': 'square', 'color': 'blue', 'qty': 10}]},
+        ...     'circle': {5: [{'shape': 'circle', 'color': 'yellow', 'qty': 5}],
+        ...                10: [{'shape': 'circle', 'color': 'pink', 'qty': 10}]},
+        ...     'oval': {5: [{'shape': 'oval', 'color': 'purple', 'qty': 5}]}
+        ... }
         >>> result == expected
         True
 
@@ -487,9 +488,8 @@ def intersection(seq, *seqs):
     Computes the intersection of all the passed-in iterables.
 
     Note:
-        This function is like ``set.intersection()`` except that this function
-        works with both hashable and unhashable values and preserves the
-        ordering of the original iterables.
+        This function is like ``set.intersection()`` except it works with both hashable
+        and unhashable values and preserves the ordering of the original iterables.
 
     Examples:
         >>> list(intersection([1, 2, 3], [1, 2, 3, 4, 5], [2, 3]))
@@ -498,7 +498,7 @@ def intersection(seq, *seqs):
         [1, 2, 3]
 
     Args:
-        seq (Iterable): Iterable to compute difference against.
+        seq (Iterable): Iterable to compute intersection against.
         *seqs (Iterable): Other iterables to compare with.
 
     Yields:
@@ -577,14 +577,15 @@ def map(iteratee, *seqs):
     applied to the items from all iterables in parallel.
 
     Note:
-        This function is like the builtin ``map`` except that it converts
-        `iteratee` into a fnc-style predicate.
+        This function is like the builtin ``map`` except it converts `iteratee` into a
+        fnc-style predicate.
 
     Examples:
         >>> list(map(str, [1, 2, 3, 4]))
         ['1', '2', '3', '4']
-        >>> list(map('a',\
-                     [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 5, 'b': 6}]))
+        >>> list(map('a',
+        ...     [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 5, 'b': 6}]
+        ... ))
         [1, 3, 5]
         >>> list(map('0.1', [[[0, 1]], [[2, 3]], [[4, 5]]]))
         [1, 3, 5]
@@ -719,9 +720,8 @@ def union(seq, *seqs):
     Computes the union of the passed-in iterables (sometimes referred to as ``unique``).
 
     Note:
-        This function is like ``set.union()`` except that this function
-        works with both hashable and unhashable values and preserves the
-        ordering of the original iterables.
+        This function is like ``set.union()`` except it works with both hashable and
+        unhashable values and preserves the ordering of the original iterables.
 
     Examples:
         >>> list(union([1, 2, 3, 1, 2, 3]))
@@ -792,9 +792,9 @@ def xor(seq, *seqs):
     only in one of the iteralbes.
 
     Note:
-        This function is like ``set.symmetric_difference()`` except that this function
-        works with both hashable and unhashable values and preserves the ordering of the
-        original iterables.
+        This function is like ``set.symmetric_difference()`` except it works with both
+        hashable and unhashable values and preserves the ordering of the original
+        iterables.
 
     Warning:
         While this function returns a generator object, internally it will create

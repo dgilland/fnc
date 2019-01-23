@@ -45,8 +45,9 @@ def defaults(*objs):
     that keys are set once and not overridden by subsequent dictionaries.
 
     Examples:
-        >>> obj = defaults({'a': 1}, {'b': 2}, {'c': 3, 'b': 5}, \
-                           {'a': 4, 'c': 2})
+        >>> obj = defaults(
+        ...     {'a': 1}, {'b': 2}, {'c': 3, 'b': 5}, {'a': 4, 'c': 2}
+        ... )
         >>> obj == {'a': 1, 'b': 2, 'c': 3}
         True
 
