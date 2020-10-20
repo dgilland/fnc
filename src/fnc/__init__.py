@@ -242,8 +242,6 @@ Note:
 """
 
 from .__version__ import __version__
-
-
 from .mappings import (
     at,
     defaults,
@@ -256,7 +254,6 @@ from .mappings import (
     omit,
     pick,
 )
-
 from .sequences import (
     chunk,
     compact,
@@ -293,7 +290,6 @@ from .sequences import (
     without,
     xor,
 )
-
 from .utilities import (
     after,
     aspath,

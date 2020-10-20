@@ -13,7 +13,8 @@ import itertools
 from operator import not_
 
 import fnc
-from .helpers import Seen, isgenerator, iscollection
+
+from .helpers import Seen, iscollection, isgenerator
 
 
 _filter = filter
@@ -602,7 +603,7 @@ def intersectionby(iteratee, seq, *seqs):
         *seqs (Iterable): Other iterables to compare with.
 
     Yields:
-        Elements that itersect.
+        Elements that intersect.
     """
     if iteratee is not None:
         iteratee = fnc.iteratee(iteratee)

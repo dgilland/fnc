@@ -1,11 +1,11 @@
 """
 Functions that operate on mappings.
 
-A mapping includes dictionaries, lists, strings, ``collections.abc.Mapping``
-and ``collections.abc.Sequence`` subclasses, and other mapping-like objects
-that either have an ``items()`` method, have ``keys()`` and ``__getitem__``
-methods, or have an ``__iter__()`` method. For functions that use :func:`get`,
-non-mapping object values can be selected from class attributes.
+A mapping includes dictionaries, lists, strings, ``collections.abc.Mapping`` and
+``collections.abc.Sequence`` subclasses, and other mapping-like objects that either have
+an ``items()`` method, have ``keys()`` and ``__getitem__`` methods, or have an
+``__iter__()`` method. For functions that use :func:`get`, non-mapping object values can
+be selected from class attributes.
 """
 
 from collections.abc import Mapping, Sequence
@@ -212,8 +212,9 @@ def mapkeys(iteratee, obj):
 
 
 def mapvalues(iteratee, obj):
-    """Return a ``dict`` with values from `obj` mapped with `iteratee` while containing
-    the same keys.
+    """
+    Return a ``dict`` with values from `obj` mapped with `iteratee` while containing the
+    same keys.
 
     Examples:
         >>> result = mapvalues(lambda v: v * 2, {'a': 1, 'b': 2, 'c': 3})

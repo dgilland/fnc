@@ -1,5 +1,4 @@
-"""General utility functions.
-"""
+"""General utility functions."""
 
 from collections.abc import Iterable, Mapping, Sequence
 from functools import partial, wraps
@@ -221,9 +220,9 @@ def conformance(source):
 def conforms(source, target):
     """
     Return whether the `target` object conforms to `source` where `source` is a
-    dictionary that contains key-value pairs which are compared against the same
-    key-values in `target`. If a key-value in `source` is a callable, then that callable
-    is used as a predicate against the corresponding key-value in `target`.
+    dictionary that contains key-value pairs which are compared against the same key-
+    values in `target`. If a key-value in `source` is a callable, then that callable is
+    used as a predicate against the corresponding key-value in `target`.
 
     Examples:
         >>> conforms({'b': 2}, {'a': 1, 'b': 2})
@@ -423,7 +422,7 @@ def overall(*funcs):
     Example:
         >>> is_bool = overall(
         ...     lambda v: isinstance(v, bool),
-        ...     lambda v: v is not 0 and v is not 1
+        ...     lambda v: v is True or v is False
         ... )
         >>> is_bool(False)
         True
@@ -544,7 +543,7 @@ def random(start=0, stop=1, floating=False):
     return rnd
 
 
-def retry(
+def retry(  # noqa: C901
     attempts=3,
     *,
     delay=0.5,
