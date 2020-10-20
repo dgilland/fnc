@@ -631,6 +631,7 @@ def intersectionby(iteratee, seq, *seqs):
 
                 if value == other_value:
                     found = True
+                    break
 
             if not found:
                 found_all = False
