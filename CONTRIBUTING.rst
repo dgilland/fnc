@@ -72,11 +72,11 @@ Ready to contribute? Here's how to set up ``fnc`` for local development.
 
    Now you can make your changes locally.
 
-5. Autoformat code using `black <https://github.com/ambv/black>`_::
+5. Autoformat code::
 
-    $ tox -e black
+    $ inv fmt
 
-6. When you're done making changes, check that your changes pass linting and all unit tests by testing with tox across all supported Python versions::
+6. When you're done making changes, check that your changes pass all unit tests by testing with ``tox`` across all supported Python versions::
 
     $ tox
 
@@ -85,8 +85,8 @@ Ready to contribute? Here's how to set up ``fnc`` for local development.
 8. Commit your changes and push your branch to GitHub::
 
     $ git add .
-    $ git commit -m "Detailed description of your changes."
-    $ git push origin name-of-your-bugfix-or-feature
+    $ git commit -m "<Detailed description of your changes.>"
+    $ git push origin name-of-your-bugfix-or-feature-branch
 
 9. Submit a pull request through GitHub.
 
