@@ -30,8 +30,8 @@ def at(paths, obj):
         (1, 3)
 
     Args:
-        collection (Iterable): Iterable to pick from.
         paths (Iterable): The object paths to pick.
+        obj (Iterable): Iterable to pick from.
 
     Returns:
         tuple
@@ -45,9 +45,7 @@ def defaults(*objs):
     that keys are set once and not overridden by subsequent dictionaries.
 
     Examples:
-        >>> obj = defaults(
-        ...     {'a': 1}, {'b': 2}, {'c': 3, 'b': 5}, {'a': 4, 'c': 2}
-        ... )
+        >>> obj = defaults({'a': 1}, {'b': 2}, {'c': 3, 'b': 5}, {'a': 4, 'c': 2})
         >>> obj == {'a': 1, 'b': 2, 'c': 3}
         True
 
@@ -83,8 +81,6 @@ def get(path, obj, *, default=None):
         path (object): Path to test for. Can be a key value, list of keys, or a
             ``.`` delimited path-string.
         obj (Mapping): Object to process.
-
-    Keyword Arguments:
         default (mixed): Default value to return if path doesn't exist.
             Defaults to ``None``.
 
@@ -157,7 +153,7 @@ def has(path, obj):
     Args:
         path (object): Path to test for. Can be a key value, list of keys, or a
             ``.`` delimited path-string.
-        obj (Mapping): Object to test.
+        obj (Iterable): Object to test.
 
     Returns:
         bool: Whether `obj` has `path`.
@@ -241,8 +237,8 @@ def merge(*objs):
     that each next dictionary extends the previous results.
 
     Examples:
-        >>> obj = merge({'a': 0}, {'b': 1}, {'b': 2, 'c': 3}, {'a': 1})
-        >>> obj == {'a': 1, 'b': 2, 'c': 3}
+        >>> item = merge({'a': 0}, {'b': 1}, {'b': 2, 'c': 3}, {'a': 1})
+        >>> item == {'a': 1, 'b': 2, 'c': 3}
         True
 
     Args:
@@ -270,7 +266,7 @@ def omit(keys, obj):
 
     Args:
         keys (Iterable): Keys to omit.
-        obj (Mapping): Object to process.
+        obj (Iterable): Object to process.
 
     Returns:
         dict: Dictionary with `keys` omitted.
@@ -290,7 +286,7 @@ def pick(keys, obj):
 
     Args:
         keys (Iterable): Keys to omit.
-        obj (Mapping): Object to process.
+        obj (Iterable): Object to process.
 
     Returns:
         dict: Dict containg picked properties.

@@ -433,20 +433,30 @@ def groupall(iteratees, seq):
     Examples:
         >>> result = groupall(
         ...     ['shape', 'qty'],
-        ...     [{'shape': 'square', 'color': 'red', 'qty': 5},
-        ...      {'shape': 'square', 'color': 'blue', 'qty': 10},
-        ...      {'shape': 'square', 'color': 'orange', 'qty': 5},
-        ...      {'shape': 'circle', 'color': 'yellow', 'qty': 5},
-        ...      {'shape': 'circle', 'color': 'pink', 'qty': 10},
-        ...      {'shape': 'oval', 'color': 'purple', 'qty': 5}]
+        ...     [
+        ...         {'shape': 'square', 'color': 'red', 'qty': 5},
+        ...         {'shape': 'square', 'color': 'blue', 'qty': 10},
+        ...         {'shape': 'square', 'color': 'orange', 'qty': 5},
+        ...         {'shape': 'circle', 'color': 'yellow', 'qty': 5},
+        ...         {'shape': 'circle', 'color': 'pink', 'qty': 10},
+        ...         {'shape': 'oval', 'color': 'purple', 'qty': 5}
+        ...     ]
         ... )
         >>> expected = {
-        ...     'square': {5: [{'shape': 'square', 'color': 'red', 'qty': 5},
-        ...                    {'shape': 'square', 'color': 'orange', 'qty': 5}],
-        ...                10: [{'shape': 'square', 'color': 'blue', 'qty': 10}]},
-        ...     'circle': {5: [{'shape': 'circle', 'color': 'yellow', 'qty': 5}],
-        ...                10: [{'shape': 'circle', 'color': 'pink', 'qty': 10}]},
-        ...     'oval': {5: [{'shape': 'oval', 'color': 'purple', 'qty': 5}]}
+        ...     'square': {
+        ...         5: [
+        ...             {'shape': 'square', 'color': 'red', 'qty': 5},
+        ...             {'shape': 'square', 'color': 'orange', 'qty': 5}
+        ...         ],
+        ...         10: [{'shape': 'square', 'color': 'blue', 'qty': 10}]
+        ...     },
+        ...     'circle': {
+        ...         5: [{'shape': 'circle', 'color': 'yellow', 'qty': 5}],
+        ...         10: [{'shape': 'circle', 'color': 'pink', 'qty': 10}]
+        ...     },
+        ...     'oval': {
+        ...         5: [{'shape': 'oval', 'color': 'purple', 'qty': 5}]
+        ...     }
         ... }
         >>> result == expected
         True
@@ -581,7 +591,8 @@ def intersectionby(iteratee, seq, *seqs):
         and unhashable values and preserves the ordering of the original iterables.
 
     Examples:
-        >>> list(intersectionby('a',
+        >>> list(intersectionby(
+        ...     'a',
         ...     [{'a': 1}, {'a': 2}, {'a': 3}],
         ...     [{'a': 1}, {'a': 2}, {'a': 3}, {'a': 4}, {'a': 5}],
         ...     [{'a': 2}, {'a': 3}]
@@ -687,9 +698,7 @@ def map(iteratee, *seqs):
     Examples:
         >>> list(map(str, [1, 2, 3, 4]))
         ['1', '2', '3', '4']
-        >>> list(map('a',
-        ...     [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 5, 'b': 6}]
-        ... ))
+        >>> list(map('a', [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 5, 'b': 6}]))
         [1, 3, 5]
         >>> list(map('0.1', [[[0, 1]], [[2, 3]], [[4, 5]]]))
         [1, 3, 5]
@@ -719,7 +728,7 @@ def mapcat(iteratee, *seqs):
 
     Args:
         iteratee (object): Iteratee to apply to each element.
-        seq (Iterable): Iterable to map and concatenate.
+        *seqs (Iterable): Iterable to map and concatenate.
 
     Yields:
         Elements resulting from concat + map operations.
@@ -792,7 +801,7 @@ def partition(iteratee, seq):
         else:
             failures.append(item)
 
-    return (successes, failures)
+    return successes, failures
 
 
 def reject(iteratee, seq):
@@ -853,7 +862,8 @@ def unionby(iteratee, seq, *seqs):
         unhashable values and preserves the ordering of the original iterables.
 
     Examples:
-        >>> list(unionby('a',
+        >>> list(unionby(
+        ...     'a',
         ...     [{'a': 1}, {'a': 2}, {'a': 3}, {'a': 1}, {'a': 2}, {'a': 3}]
         ... ))
         [{'a': 1}, {'a': 2}, {'a': 3}]
@@ -913,8 +923,8 @@ def without(values, seq):
         [1, 3, 3]
 
     Args:
-        array (list): List to filter.
         values (mixed): Values to remove.
+        seq (Iterable): List to filter.
 
     Yields:
         Elements not in `values`.

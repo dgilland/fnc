@@ -1,8 +1,7 @@
 """General utility functions."""
 
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Iterable
 from functools import partial, wraps
-import itertools
 from random import randint, uniform
 import re
 import time
@@ -113,7 +112,7 @@ def atgetter(paths):
         paths (Iterable): Path values to fetch from object.
 
     Returns:
-        function: Function like ``f(obj): fnc.at(paths, obj)``.
+        callable: Function like ``f(obj): fnc.at(paths, obj)``.
     """
     return partial(fnc.at, paths)
 
@@ -176,11 +175,11 @@ def compose(*funcs):
         8
 
     Args:
-        *funcs (function): Function(s) to compose. If `func` is a tuple, then it will be
+        *funcs (callable): Function(s) to compose. If `func` is a tuple, then it will be
             converted into a partial using ``functools.partial(*func)``.
 
     Returns:
-        function: Composed function.
+        callable: Composed function.
     """
     funcs = tuple(partial(*func) if isinstance(func, tuple) else func for func in funcs)
 
@@ -235,8 +234,8 @@ def conforms(source, target):
         False
 
     Args:
-        source (object): Object of path values to match.
-        target (object): Object to compare.
+        source (Mapping): Object of path values to match.
+        target (Mapping): Object to compare.
 
     Returns:
         bool: Whether `target` is a match or not.
@@ -272,7 +271,7 @@ def constant(value):
         value (object): Constant value to return.
 
     Returns:
-        function: Function that always returns `value`.
+        callable: Function that always returns `value`.
     """
     return lambda *args, **kwargs: value
 
@@ -348,7 +347,7 @@ def iteratee(obj):
         obj (object): Object to convert into an iteratee.
 
     Returns:
-        function: Iteratee function.
+        callable: Iteratee function.
     """
     if obj is None:
         return identity
@@ -409,7 +408,7 @@ def over(*funcs):
         *funcs (callable): Functions to call.
 
     Returns:
-        tuple: Results from each function call
+        callable: Function that returns tuple results from each function call.
     """
     return lambda *args: tuple(func(*args) for func in funcs)
 
@@ -433,7 +432,7 @@ def overall(*funcs):
         *funcs (callable): Functions to call.
 
     Returns:
-        bool: Whether call functions evaulate to true.
+        callable: Function that returns bool of whether call functions evaulate to true.
     """
     return lambda *args: all(func(*args) for func in funcs)
 
@@ -457,7 +456,7 @@ def overany(*funcs):
         *funcs (callable): Functions to call.
 
     Returns:
-        bool: Whether call functions evaulate to true.
+        callable: Function that returns bool of whether call functions evaulate to true.
     """
     return lambda *args: any(func(*args) for func in funcs)
 
@@ -480,10 +479,10 @@ def pathgetter(path, default=None):
         [1, 2]
 
     Args:
-        path (str|list): Path value to fetch from object.
+        path (object): Path value to fetch from object.
 
     Returns:
-        function: Function like ``f(obj): fnc.get(path, obj)``.
+        callable: Function like ``f(obj): fnc.get(path, obj)``.
     """
     return partial(fnc.get, path, default=default)
 
@@ -501,7 +500,7 @@ def pickgetter(keys):
         keys (Iterable): Keys to fetch from object.
 
     Returns:
-        function: Function like ``f(obj): fnc.pick(keys, obj)``.
+        callable: Function like ``f(obj): fnc.pick(keys, obj)``.
     """
     return partial(fnc.pick, keys)
 

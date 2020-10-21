@@ -12,7 +12,7 @@ class _NotSet(object):
     """
     Represents an unset value.
 
-    Used to differeniate between an explicit ``None`` and an unset value.
+    Used to differentiate between an explicit ``None`` and an unset value.
     """
 
     def __bool__(self):  # pragma: no cover
