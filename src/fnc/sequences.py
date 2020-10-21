@@ -724,7 +724,7 @@ def map(iteratee, *seqs):
     return _map(fnc.iteratee(iteratee), *seqs)
 
 
-def mapcat(iteratee, *seq):
+def mapcat(iteratee, *seqs):
     """
     Map an `iteratee` to each element of each iterable in `seqs` and concatenate the
     results into a single iterable.
@@ -740,7 +740,7 @@ def mapcat(iteratee, *seq):
     Yields:
         Elements resulting from concat + map operations.
     """
-    return itertools.chain.from_iterable(map(iteratee, *seq))
+    return concat(*map(iteratee, *seqs))
 
 
 def mapflat(iteratee, *seqs):
