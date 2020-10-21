@@ -22,7 +22,7 @@ class _NotSet(object):
 NotSet = _NotSet()
 
 
-class Seen(object):
+class Container(object):
     """
     A "seen" container for keeping track of elements of a sequence that have been
     encountered before.
@@ -32,15 +32,21 @@ class Seen(object):
     containers for existence.
     """
 
-    def __init__(self):
+    def __init__(self, values=None):
         self.hashable = set()
         self.unhashable = []
+
+        if values is not None:
+            self.extend(values)
 
     def __contains__(self, value):
         try:
             return value in self.hashable
         except TypeError:
             return value in self.unhashable
+
+    def __len__(self):  # pragma: no cover
+        return len(self.hashable) + len(self.unhashable)
 
     def add(self, value):
         if value in self:
@@ -50,6 +56,10 @@ class Seen(object):
             self.hashable.add(value)
         except TypeError:
             self.unhashable.append(value)
+
+    def extend(self, values):
+        for value in values:
+            self.add(value)
 
 
 def iscollection(value):

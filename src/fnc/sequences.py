@@ -14,7 +14,7 @@ from operator import not_
 
 import fnc
 
-from .helpers import Seen, iscollection, isgenerator
+from .helpers import Container, iscollection, isgenerator
 
 
 _filter = filter
@@ -164,14 +164,20 @@ def differenceby(iteratee, seq, *seqs):
     Yields:
         Each element in `seq` that doesn't appear in `seqs`.
     """
-    if len(seqs) == 0:
+    if not seqs:
         yield from unionby(iteratee, seq)
         return
 
     if iteratee is not None:
         iteratee = fnc.iteratee(iteratee)
 
-    seen = Seen()
+    yielded = Container()
+    # Concat sequences into a single sequence and map iteratee to each item so that the
+    # computed value only needs to be done once for each item since that is what we'll
+    # compare to below. We'll store these values into a iterable in case any of the
+    # sequences are a generator/iterator that would get exhausted if we tried to iterate
+    # over it more than once.
+    others = Container(map(iteratee, concat(*seqs)))
 
     for item in seq:
         if iteratee is not None:
@@ -179,31 +185,16 @@ def differenceby(iteratee, seq, *seqs):
         else:
             value = item
 
-        if value in seen:
+        if value in yielded or value in others:
             continue
 
-        found = False
-
-        for other_seq in seqs:
-            for other_item in other_seq:
-                if iteratee is not None:
-                    other_value = iteratee(other_item)
-                else:
-                    other_value = other_item
-
-                if value == other_value:
-                    found = True
-                    break
-
-        if not found:
-            yield item
-
-        seen.add(item)
+        yield item
+        yielded.add(value)
 
 
 def duplicates(seq, *seqs):
     """
-    Yields unique elements from `seq` that are repeated one or more times.
+    Yields unique elements from sequences that are repeated one or more times.
 
     Note:
         The order of yielded elements depends on when the second duplicated
@@ -245,8 +236,8 @@ def duplicatesby(iteratee, seq, *seqs):
     if iteratee is not None:
         iteratee = fnc.iteratee(iteratee)
 
-    seen = Seen()
-    yielded = Seen()
+    seen = Container()
+    yielded = Container()
 
     for item in itertools.chain(seq, *seqs):
         if iteratee is not None:
@@ -605,10 +596,21 @@ def intersectionby(iteratee, seq, *seqs):
     Yields:
         Elements that intersect.
     """
+    if not seqs:
+        yield from unionby(iteratee, seq)
+        return
+
     if iteratee is not None:
         iteratee = fnc.iteratee(iteratee)
 
-    seen = Seen()
+    yielded = Container()
+    # Map iteratee to each item in each other sequence and compute intersection of those
+    # values to reduce number of times iteratee is called. The resulting sequence will
+    # be an intersection of computed values which will be used to compare to the primary
+    # sequence. We'll store these values into a iterable in case any of the sequences
+    # are a generator/iterator that would get exhausted if we tried to iterate over it
+    # more than once.
+    others = Container(intersection(*(map(iteratee, other) for other in seqs)))
 
     for item in seq:
         if iteratee is not None:
@@ -616,30 +618,12 @@ def intersectionby(iteratee, seq, *seqs):
         else:
             value = item
 
-        if value in seen:
+        if value in yielded:
             continue
 
-        found_all = True
-
-        for other_seq in seqs:
-            found = False
-            for other_item in other_seq:
-                if iteratee is not None:
-                    other_value = iteratee(other_item)
-                else:
-                    other_value = other_item
-
-                if value == other_value:
-                    found = True
-                    break
-
-            if not found:
-                found_all = False
-                break
-
-        if found_all:
+        if value in others:
             yield item
-            seen.add(value)
+            yielded.add(value)
 
 
 def intersperse(value, seq):
@@ -885,7 +869,7 @@ def unionby(iteratee, seq, *seqs):
     if iteratee is not None:
         iteratee = fnc.iteratee(iteratee)
 
-    seen = Seen()
+    seen = Container()
 
     for item in itertools.chain(seq, *seqs):
         if iteratee is not None:

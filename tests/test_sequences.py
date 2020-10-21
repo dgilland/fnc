@@ -80,6 +80,10 @@ def test_countby(case):
         dict(args=([1, 2, 3, 4], []), expected=[1, 2, 3, 4]),
         dict(args=([1, 2, 3, 4], [2, 4], [3, 5, 6]), expected=[1]),
         dict(args=([1, 1, 1, 1], [2, 4], [3, 5, 6]), expected=[1]),
+        dict(args=(iter([1, 2, 3, 4]), iter([2, 4]), iter([1, 3, 5, 6])), expected=[]),
+        dict(
+            args=(iter([0, 1, 2, 3, 4]), iter([2, 4]), iter([1, 3, 5, 6])), expected=[0]
+        ),
     ],
 )
 def test_difference(case):
@@ -94,8 +98,8 @@ def test_difference(case):
             expected=[{"a": 1}, {"a": 2}, {"a": 3}, {"a": 4}],
         ),
         dict(
-            args=(lambda x: round(x), [1.5, 2.2, 3.7, 4.2], [2.5, 4.9], [3, 5, 6]),
-            expected=[3.7, 4.2],
+            args=(round, [1.5, 2.2, 3.7, 4.2], [2.5, 4.9], [3, 5, 6]),
+            expected=[3.7],
         ),
     ],
 )
@@ -108,6 +112,11 @@ def test_differenceby(case):
     [
         dict(args=([1, 2, 3, 2, 1, 5, 6, 5, 5, 5],), expected=[2, 1, 5]),
         dict(args=([1, 2], [3, 2], [1, 5], [6, 5, 5, 5]), expected=[2, 1, 5]),
+        dict(args=([1, 2], [3, 2], [1, 5], [6, 5, 5, 5]), expected=[2, 1, 5]),
+        dict(
+            args=(iter([1, 2]), iter([3, 2]), iter([1, 5]), iter([6, 5, 5, 5])),
+            expected=[2, 1, 5],
+        ),
     ],
 )
 def test_duplicates(case):
@@ -471,6 +480,14 @@ def test_interleave(case):
         dict(args=([1, 2, 3],), expected=[1, 2, 3]),
         dict(args=([], [101, 2, 1, 10], [2, 1]), expected=[]),
         dict(args=([],), expected=[]),
+        dict(args=[iter([2, 1]), iter([2, 1])], expected=[2, 1]),
+        dict(args=[iter([2, 1]), iter([1, 2])], expected=[2, 1]),
+        dict(
+            args=[iter([2, 1]), iter([1, 2]), iter([0, 1, 2]), iter([1])], expected=[1]
+        ),
+        dict(
+            args=[iter([1, 2]), iter([2, 1]), iter([0, 1, 2]), iter([1])], expected=[1]
+        ),
     ],
 )
 def test_intersection(case):
