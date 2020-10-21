@@ -249,7 +249,7 @@ def duplicatesby(iteratee, seq, *seqs):
             seen.add(value)
             continue
 
-        if value in seen and value not in yielded:
+        if value not in yielded:
             yield item
             yielded.add(value)
 
