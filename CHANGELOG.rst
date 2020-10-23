@@ -2,6 +2,11 @@ Changelog
 =========
 
 
+- Fix bug in ``intersection/intersectionby`` and ``difference/differenceby`` where incorrect results could be returned when generators passed in as the sequences to compare with.
+- Add support for Python 3.9.
+- Drop support for Python <= 3.5.
+
+
 v0.4.0 (2019-01-23)
 -------------------
 
