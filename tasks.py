@@ -100,14 +100,14 @@ def unit(ctx, args=f"--cov={PACKAGE_SOURCE} {TEST_TARGETS}"):
 @task
 def test(ctx):
     """Run linters and tests."""
-    print("Running unit tests")
-    unit(ctx)
+    print("Building package")
+    build(ctx)
 
     print("Building docs")
     docs(ctx)
 
-    print("Building package")
-    build(ctx)
+    print("Running unit tests")
+    unit(ctx)
 
 
 @task
