@@ -23,7 +23,7 @@ Features
 - Shorthand-style iteratees (callbacks) to easily filter and map data.
 - String object-path support for references nested data structures.
 - 100% test coverage.
-- Python 3.4+
+- Python 3.6+
 
 
 Quickstart
@@ -48,10 +48,12 @@ Start working with data:
 
 .. code-block:: python
 
-    users = [{'id': 1, 'name': 'Jack', 'email': 'jack@example.org', 'active': True},
-             {'id': 2, 'name': 'Max', 'email': 'max@example.com', 'active': True},
-             {'id': 3, 'name': 'Allison', 'email': 'allison@example.org', 'active': False},
-             {'id': 4, 'name': 'David', 'email': 'david@example.net', 'active': False}]
+    users = [
+        {'id': 1, 'name': 'Jack', 'email': 'jack@example.org', 'active': True},
+        {'id': 2, 'name': 'Max', 'email': 'max@example.com', 'active': True},
+        {'id': 3, 'name': 'Allison', 'email': 'allison@example.org', 'active': False},
+        {'id': 4, 'name': 'David', 'email': 'david@example.net', 'active': False}
+    ]
 
 
 Filter active users:
@@ -137,10 +139,12 @@ Compose multiple functions into a generator pipeline:
     get_emails = partial(fnc.map, 'email')
     get_email_domains = partial(fnc.map, lambda email: email.split('@')[1])
 
-    get_active_email_domains = fnc.compose(filter_active,
-                                           get_emails,
-                                           get_email_domains,
-                                           set)
+    get_active_email_domains = fnc.compose(
+        filter_active,
+        get_emails,
+        get_email_domains,
+        set,
+    )
 
     email_domains = get_active_email_domains(users)
     # {'example.com', 'example.org'}
@@ -150,10 +154,12 @@ Or do the same thing except using a terser "partial" shorthand:
 
 .. code-block:: python
 
-    get_active_email_domains = fnc.compose((fnc.filter, {'active': True}),
-                                           (fnc.map, 'email'),
-                                           (fnc.map, lambda email: email.split('@')[1]),
-                                           set)
+    get_active_email_domains = fnc.compose(
+        (fnc.filter, {'active': True}),
+        (fnc.map, 'email'),
+        (fnc.map, lambda email: email.split('@')[1]),
+        set,
+    )
 
     email_domains = get_active_email_domains(users)
     # {'example.com', 'example.org'}
