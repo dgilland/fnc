@@ -1,7 +1,7 @@
 fnc
 ***
 
-|version| |travis| |coveralls| |license|
+|version| |build| |coveralls| |license|
 
 
 Functional programming in Python with generators and other utilities.
@@ -165,8 +165,8 @@ For more details and examples, please see the full documentation at https://fnc.
 .. |version| image:: https://img.shields.io/pypi/v/fnc.svg?style=flat-square
     :target: https://pypi.python.org/pypi/fnc/
 
-.. |travis| image:: https://img.shields.io/travis/dgilland/fnc/master.svg?style=flat-square
-    :target: https://travis-ci.org/dgilland/fnc
+.. |build| image:: https://img.shields.io/github/workflow/status/dgilland/fnc/Main/master?style=flat-square
+    :target: https://github.com/dgilland/fnc/actions
 
 .. |coveralls| image:: https://img.shields.io/coveralls/dgilland/fnc/master.svg?style=flat-square
     :target: https://coveralls.io/r/dgilland/fnc
