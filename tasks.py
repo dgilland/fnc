@@ -124,7 +124,7 @@ def docs(ctx, serve=False, port=8000):
 @task
 def build(ctx):
     """Build Python package."""
-    run("rm -rf dist build")
+    run("rm -rf dist build docs/_build")
     run("python setup.py -q sdist bdist_wheel")
 
 
