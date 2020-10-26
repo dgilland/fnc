@@ -1,10 +1,10 @@
 """
 Functions that operate on sequences.
 
-Most of these functions return generators so that they will be more efficient at
-processing large datasets. All generator functions will have a ``Yields`` section in
-their docstring to easily identify them as generators. Otherwise, functions that return
-concrete values with have a ``Returns`` section instead.
+Most of these functions return generators so that they will be more efficient at processing large
+datasets. All generator functions will have a ``Yields`` section in their docstring to easily
+identify them as generators. Otherwise, functions that return concrete values with have a
+``Returns`` section instead.
 """
 
 from collections import Counter, deque
@@ -89,8 +89,8 @@ def concat(*seqs):
 
 def countby(iteratee, seq):
     """
-    Return a ``dict`` composed of keys generated from the results of running each
-    element of `seq` through the `iteratee`.
+    Return a ``dict`` composed of keys generated from the results of running each element of `seq`
+    through the `iteratee`.
 
     Examples:
         >>> result = countby(None, [1, 2, 1, 2, 3, 4])
@@ -141,17 +141,15 @@ def difference(seq, *seqs):
 
 def differenceby(iteratee, seq, *seqs):
     """
-    Like :func:`difference` except that an `iteratee` is used to modify each element in
-    the sequences. The modified values are then used for comparison.
+    Like :func:`difference` except that an `iteratee` is used to modify each element in the
+    sequences. The modified values are then used for comparison.
 
     Note:
         This function is like ``set.difference()`` except it works with both hashable
         and unhashable values and preserves the ordering of the original iterables.
 
     Examples:
-        >>> list(differenceby('a',
-        ...     [{'a': 1}, {'a': 2}, {'a': 3}], [{'a': 1}], [{'a': 2}])
-        ... )
+        >>> list(differenceby('a', [{'a': 1}, {'a': 2}, {'a': 3}], [{'a': 1}], [{'a': 2}]))
         [{'a': 3}]
         >>> list(differenceby(lambda x: x % 4, [1, 4, 2, 3, 5, 0], [1], [2, 0]))
         [3]
@@ -218,8 +216,8 @@ def duplicates(seq, *seqs):
 
 def duplicatesby(iteratee, seq, *seqs):
     """
-    Like :func:`duplicates` except that an `iteratee` is used to modify each element in
-    the sequences. The modified values are then used for comparison.
+    Like :func:`duplicates` except that an `iteratee` is used to modify each element in the
+    sequences. The modified values are then used for comparison.
 
     Examples:
         >>> list(duplicatesby('a', [{'a':1}, {'a':3}, {'a':2}, {'a':3}, {'a':1}]))
@@ -256,8 +254,7 @@ def duplicatesby(iteratee, seq, *seqs):
 
 def filter(iteratee, seq):
     """
-    Filter `seq` by `iteratee`, yielding only the elements that the iteratee returns
-    truthy for.
+    Filter `seq` by `iteratee`, yielding only the elements that the iteratee returns truthy for.
 
     Note:
         This function is like the builtin ``filter`` except it converts `iteratee` into
@@ -282,8 +279,8 @@ def filter(iteratee, seq):
 
 def find(iteratee, seq):
     """
-    Iterates over elements of `seq`, returning the first element that the iteratee
-    returns truthy for.
+    Iterates over elements of `seq`, returning the first element that the iteratee returns truthy
+    for.
 
     Examples:
         >>> find(lambda x: x >= 3, [1, 2, 3, 4])
@@ -309,8 +306,8 @@ def find(iteratee, seq):
 
 def findindex(iteratee, seq):
     """
-    Return the index of the element in `seq` that returns ``True`` for `iteratee`. If no
-    match is found, ``-1`` is returned.
+    Return the index of the element in `seq` that returns ``True`` for `iteratee`. If no match is
+    found, ``-1`` is returned.
 
     Examples:
         >>> findindex(lambda x: x >= 3, [1, 2, 3, 4])
@@ -331,8 +328,7 @@ def findindex(iteratee, seq):
 
 def findlast(iteratee, seq):
     """
-    This function is like :func:`find` except it iterates over elements of `seq` from
-    right to left.
+    This function is like :func:`find` except it iterates over elements of `seq` from right to left.
 
     Examples:
         >>> findlast(lambda x: x >= 3, [1, 2, 3, 4])
@@ -355,8 +351,8 @@ def findlast(iteratee, seq):
 
 def findlastindex(iteratee, seq):
     """
-    Return the index of the element in `seq` that returns ``True`` for `iteratee`. If no
-    match is found, ``-1`` is returned.
+    Return the index of the element in `seq` that returns ``True`` for `iteratee`. If no match is
+    found, ``-1`` is returned.
 
     Examples:
         >>> findlastindex(lambda x: x >= 3, [1, 2, 3, 4])
@@ -372,9 +368,7 @@ def findlastindex(iteratee, seq):
         int: Index of found item or ``-1`` if not found.
     """
     iteratee = fnc.iteratee(iteratee)
-    return next(
-        (i for i, value in reversed(tuple(enumerate(seq))) if iteratee(value)), -1
-    )
+    return next((i for i, value in reversed(tuple(enumerate(seq))) if iteratee(value)), -1)
 
 
 def flatten(*seqs):
@@ -427,8 +421,8 @@ def flattendeep(*seqs):
 
 def groupall(iteratees, seq):
     """
-    This function is like :func:`groupby` except it supports nested grouping by multiple
-    iteratees. If only a single iteratee is given, it is like calling :func:`groupby`.
+    This function is like :func:`groupby` except it supports nested grouping by multiple iteratees.
+    If only a single iteratee is given, it is like calling :func:`groupby`.
 
     Examples:
         >>> result = groupall(
@@ -478,8 +472,8 @@ def groupall(iteratees, seq):
 
 def groupby(iteratee, seq):
     """
-    Return a ``dict`` composed of keys generated from the results of running each
-    element of `seq` through the `iteratee`.
+    Return a ``dict`` composed of keys generated from the results of running each element of `seq`
+    through the `iteratee`.
 
     Examples:
         >>> result = groupby('a', [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}])
@@ -531,8 +525,8 @@ def intercalate(value, seq):
 
 def interleave(*seqs):
     """
-    Merge multiple iterables into a single iterable by inserting the next element from
-    each iterable by sequential round-robin.
+    Merge multiple iterables into a single iterable by inserting the next element from each iterable
+    by sequential round-robin.
 
     Examples:
         >>> list(interleave([1, 2, 3], [4, 5, 6], [7, 8, 9]))
@@ -583,8 +577,8 @@ def intersection(seq, *seqs):
 
 def intersectionby(iteratee, seq, *seqs):
     """
-    Like :func:`intersection` except that an `iteratee` is used to modify each element
-    in the sequences. The modified values are then used for comparison.
+    Like :func:`intersection` except that an `iteratee` is used to modify each element in the
+    sequences. The modified values are then used for comparison.
 
     Note:
         This function is like ``set.intersection()`` except it works with both hashable
@@ -666,8 +660,8 @@ def intersperse(value, seq):
 
 def keyby(iteratee, seq):
     """
-    Return a ``dict`` composed of keys generated from the results of running each
-    element of `seq` through the `iteratee`.
+    Return a ``dict`` composed of keys generated from the results of running each element of `seq`
+    through the `iteratee`.
 
     Examples:
         >>> results = keyby('a', [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}])
@@ -687,9 +681,9 @@ def keyby(iteratee, seq):
 
 def map(iteratee, *seqs):
     """
-    Map `iteratee` to each element of iterable and yield the results. If additional
-    iterable arguments are passed, `iteratee` must take that many arguments and is
-    applied to the items from all iterables in parallel.
+    Map `iteratee` to each element of iterable and yield the results. If additional iterable
+    arguments are passed, `iteratee` must take that many arguments and is applied to the items from
+    all iterables in parallel.
 
     Note:
         This function is like the builtin ``map`` except it converts `iteratee` into a
@@ -719,8 +713,8 @@ def map(iteratee, *seqs):
 
 def mapcat(iteratee, *seqs):
     """
-    Map an `iteratee` to each element of each iterable in `seqs` and concatenate the
-    results into a single iterable.
+    Map an `iteratee` to each element of each iterable in `seqs` and concatenate the results into a
+    single iterable.
 
     Examples:
         >>> list(mapcat(lambda x: list(range(x)), range(4)))
@@ -738,8 +732,7 @@ def mapcat(iteratee, *seqs):
 
 def mapflat(iteratee, *seqs):
     """
-    Map an `iteratee` to each element of each iterable in `seqs` and flatten the
-    results.
+    Map an `iteratee` to each element of each iterable in `seqs` and flatten the results.
 
     Examples:
         >>> list(mapflat(lambda n: [[n, n]], [1, 2]))
@@ -757,8 +750,8 @@ def mapflat(iteratee, *seqs):
 
 def mapflatdeep(iteratee, *seqs):
     """
-    Map an `iteratee` to each element of each iterable in `seqs` and recurisvely flatten
-    the results.
+    Map an `iteratee` to each element of each iterable in `seqs` and recurisvely flatten the
+    results.
 
     Examples:
         >>> list(mapflatdeep(lambda n: [[n, n]], [1, 2]))
@@ -776,9 +769,9 @@ def mapflatdeep(iteratee, *seqs):
 
 def partition(iteratee, seq):
     """
-    Return a ``tuple`` of 2 lists containing elements from `seq` split into two groups
-    where the first group contains all elements the `iteratee` returned truthy for and
-    the second group containing the falsey elements.
+    Return a ``tuple`` of 2 lists containing elements from `seq` split into two groups where the
+    first group contains all elements the `iteratee` returned truthy for and the second group
+    containing the falsey elements.
 
     Examples:
         >>> partition(lambda x: x % 2, [1, 2, 3, 4])
@@ -806,8 +799,8 @@ def partition(iteratee, seq):
 
 def reject(iteratee, seq):
     """
-    The opposite of :func:`filter` this function yields the elements of `seq` that the
-    `iteratee` returns falsey for.
+    The opposite of :func:`filter` this function yields the elements of `seq` that the `iteratee`
+    returns falsey for.
 
     Examples:
         >>> list(reject(lambda x: x >= 3, [1, 2, 3, 4]))
@@ -854,8 +847,8 @@ def union(seq, *seqs):
 
 def unionby(iteratee, seq, *seqs):
     """
-    Like :func:`union` except that an `iteratee` is used to modify each element in the
-    sequences. The modified values are then used for comparison.
+    Like :func:`union` except that an `iteratee` is used to modify each element in the sequences.
+    The modified values are then used for comparison.
 
     Note:
         This function is like ``set.union()`` except it works with both hashable and
@@ -895,9 +888,8 @@ def unionby(iteratee, seq, *seqs):
 
 def unzip(seq):
     """
-    The inverse of the builtin ``zip`` function, this method transposes groups of
-    elements into new groups composed of elements from each group at their corresponding
-    indexes.
+    The inverse of the builtin ``zip`` function, this method transposes groups of elements into new
+    groups composed of elements from each group at their corresponding indexes.
 
     Examples:
         >>> list(unzip([(1, 4, 7), (2, 5, 8), (3, 6, 9)]))
@@ -936,8 +928,8 @@ def without(values, seq):
 
 def xor(seq, *seqs):
     """
-    Computes the symmetric difference of the provided iterables where the elements are
-    only in one of the iteralbes.
+    Computes the symmetric difference of the provided iterables where the elements are only in one
+    of the iteralbes.
 
     Note:
         This function is like ``set.symmetric_difference()`` except it works with both

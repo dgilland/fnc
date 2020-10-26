@@ -40,7 +40,7 @@ def docformatter(ctx):
     """Autoformat docstrings using docformatter."""
     run(
         f"docformatter -r {LINT_TARGETS} "
-        f"--in-place --pre-summary-newline --wrap-descriptions 88 --wrap-summaries 88"
+        f"--in-place --pre-summary-newline --wrap-descriptions 100 --wrap-summaries 100"
     )
 
 

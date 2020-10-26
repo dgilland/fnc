@@ -2,10 +2,9 @@
 Functions that operate on mappings.
 
 A mapping includes dictionaries, lists, strings, ``collections.abc.Mapping`` and
-``collections.abc.Sequence`` subclasses, and other mapping-like objects that either have
-an ``items()`` method, have ``keys()`` and ``__getitem__`` methods, or have an
-``__iter__()`` method. For functions that use :func:`get`, non-mapping object values can
-be selected from class attributes.
+``collections.abc.Sequence`` subclasses, and other mapping-like objects that either have an
+``items()`` method, have ``keys()`` and ``__getitem__`` methods, or have an ``__iter__()`` method.
+For functions that use :func:`get`, non-mapping object values can be selected from class attributes.
 """
 
 from collections.abc import Mapping, Sequence
@@ -41,8 +40,8 @@ def at(paths, obj):
 
 def defaults(*objs):
     """
-    Create a ``dict`` extended with the key-values from the provided dictionaries such
-    that keys are set once and not overridden by subsequent dictionaries.
+    Create a ``dict`` extended with the key-values from the provided dictionaries such that keys are
+    set once and not overridden by subsequent dictionaries.
 
     Examples:
         >>> obj = defaults({'a': 1}, {'b': 2}, {'c': 3, 'b': 5}, {'a': 4, 'c': 2})
@@ -60,8 +59,7 @@ def defaults(*objs):
 
 def get(path, obj, *, default=None):
     """
-    Get the `path` value at any depth of an object. If path doesn't exist, `default` is
-    returned.
+    Get the `path` value at any depth of an object. If path doesn't exist, `default` is returned.
 
     Examples:
         >>> get('a.b.c', {}) is None
@@ -188,8 +186,7 @@ def invert(obj):
 
 def mapkeys(iteratee, obj):
     """
-    Return a ``dict`` with keys from `obj` mapped with `iteratee` while containing the
-    same values.
+    Return a ``dict`` with keys from `obj` mapped with `iteratee` while containing the same values.
 
     Examples:
         >>> result = mapkeys(lambda k: k * 2, {'a': 1, 'b': 2, 'c': 3})
@@ -209,8 +206,7 @@ def mapkeys(iteratee, obj):
 
 def mapvalues(iteratee, obj):
     """
-    Return a ``dict`` with values from `obj` mapped with `iteratee` while containing the
-    same keys.
+    Return a ``dict`` with values from `obj` mapped with `iteratee` while containing the same keys.
 
     Examples:
         >>> result = mapvalues(lambda v: v * 2, {'a': 1, 'b': 2, 'c': 3})
@@ -233,8 +229,8 @@ def mapvalues(iteratee, obj):
 
 def merge(*objs):
     """
-    Create a ``dict`` merged with the key-values from the provided dictionaries such
-    that each next dictionary extends the previous results.
+    Create a ``dict`` merged with the key-values from the provided dictionaries such that each next
+    dictionary extends the previous results.
 
     Examples:
         >>> item = merge({'a': 0}, {'b': 1}, {'b': 2, 'c': 3}, {'a': 1})
@@ -255,8 +251,8 @@ def merge(*objs):
 
 def omit(keys, obj):
     """
-    The opposite of :func:`pick`. This method creates an object composed of the property
-    paths of `obj` that are not omitted.
+    The opposite of :func:`pick`. This method creates an object composed of the property paths of
+    `obj` that are not omitted.
 
     Examples:
         >>> omit(['a', 'c'], {'a': 1, 'b': 2, 'c': 3 }) == {'b': 2}

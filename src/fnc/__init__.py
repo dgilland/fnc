@@ -1,7 +1,7 @@
 """
-The ``fnc`` library is a functional-style utility library with an emphasis on using
-generators to process sequences of data. This allows one to easily build data processing
-pipelines to more efficiently munge data through function composition.
+The ``fnc`` library is a functional-style utility library with an emphasis on using generators to
+process sequences of data. This allows one to easily build data processing pipelines to more
+efficiently munge data through function composition.
 
 All public functions are available from the main module.
 
@@ -12,12 +12,12 @@ All public functions are available from the main module.
     fnc.<function>
 
 Note:
-    It is recommended to use the above syntax or import functions from the main module
-    instead of importing from submodules. Future versions may change/reorganize things
-    which could break that usage.
+    It is recommended to use the above syntax or import functions from the main module instead of
+    importing from submodules. Future versions may change/reorganize things which could break that
+    usage.
 
-So what makes this library different than other function libraries for Python? Some main
-features to highlight are:
+So what makes this library different than other function libraries for Python? Some main features to
+highlight are:
 
 1. Generators when possible.
 2. Shorthand iteratee support.
@@ -26,46 +26,43 @@ features to highlight are:
 Generators
 ----------
 
-By using generators, large datasets can be processed more efficiently which can enable
-one to build data pipelines that "push" each item of a sequence all the way through to
-the end before being "collected" in a final data structure. This means that these data
-pipelines can iterate over a sequence just once while transforming the data as it goes.
-These pipelines can be built through function composition (e.g. ``fnc.compose`` +
-``functools.partial``) or by simply building up the final form through successive
-generator passing.
+By using generators, large datasets can be processed more efficiently which can enable one to build
+data pipelines that "push" each item of a sequence all the way through to the end before being
+"collected" in a final data structure. This means that these data pipelines can iterate over a
+sequence just once while transforming the data as it goes. These pipelines can be built through
+function composition (e.g. ``fnc.compose`` + ``functools.partial``) or by simply building up the
+final form through successive generator passing.
 
 Iteratees
 ---------
 
-The other main feature is shorthand iteratee support. But what is an iteratee? From
-Wikipedia (https://en.wikipedia.org/wiki/Iteratee):
+The other main feature is shorthand iteratee support. But what is an iteratee? From Wikipedia
+(https://en.wikipedia.org/wiki/Iteratee):
 
     ...an iteratee is a composable abstraction for incrementally processing sequentially
     presented chunks of input data in a purely functional fashion.
 
-What does that mean exactly? An iteratee is a function that is applied to each item in a
-sequence.
+What does that mean exactly? An iteratee is a function that is applied to each item in a sequence.
 
 Note:
-    All functions that accept an iteratee have the iteratee as the first argument to the
-    function. This mirrors the Python standard library for functions like ``map``,
-    ``filter``, and ``reduce``. It also makes it easier to use ``functools.partial`` to
-    create ad-hoc functions with bound iteratees.
+    All functions that accept an iteratee have the iteratee as the first argument to the function.
+    This mirrors the Python standard library for functions like ``map``, ``filter``, and ``reduce``.
+    It also makes it easier to use ``functools.partial`` to create ad-hoc functions with bound
+    iteratees.
 
-Functions that accept iteratees can of course use a callable as the iteratee, but they
-can also accept the shorthand styles below.
+Functions that accept iteratees can of course use a callable as the iteratee, but they can also
+accept the shorthand styles below.
 
 Note:
-    If iteratee shorthand styles are not your thing, each shorthand style has a
-    corresponding higher-order function that can be used to return the same callable
-    iteratee.
+    If iteratee shorthand styles are not your thing, each shorthand style has a corresponding
+    higher-order function that can be used to return the same callable iteratee.
 
 Dict
 ++++
 
 A dictionary-iteratee returns a "conforms" comparator that matches source key-values to
-target key-values. Typically, this iteratee is used to filter a list of dictionaries by
-checking if the targets are a superset of the source.
+target key-values. Typically, this iteratee is used to filter a list of dictionaries by checking if
+the targets are a superset of the source.
 
 For example:
 
@@ -81,15 +78,13 @@ which is the same as:
     x = list(fnc.filter(fnc.conformance({'a': 1, 'b': 2}), ...))
 
 Note:
-    When values in the dictionary-iteratee are callables, they will be treated as
-    predicate functions that will be called with the corresponding value in the
-    comparison target.
+    When values in the dictionary-iteratee are callables, they will be treated as predicate
+    functions that will be called with the corresponding value in the comparison target.
 
 Set
 +++
 
-A set-iteratee applies a "pickgetter" function to select a subset of fields from an
-object.
+A set-iteratee applies a "pickgetter" function to select a subset of fields from an object.
 
 For example:
 
@@ -111,8 +106,7 @@ which is the same as:
 Tuple
 +++++
 
-A tuple-iteratee applies an "atgetter" function to return a tuple of values at the given
-paths.
+A tuple-iteratee applies an "atgetter" function to return a tuple of values at the given paths.
 
 For example:
 
@@ -138,8 +132,7 @@ which is the same as:
 List
 ++++
 
-A list-iteratee applies a "pathgetter" function to return the value at the given object
-path.
+A list-iteratee applies a "pathgetter" function to return the value at the given object path.
 
 For example:
 
@@ -165,8 +158,8 @@ which is the same as:
 String
 ++++++
 
-A string-iteratee is like a list-iteratee except that an object path is represented in
-object-path notiation like ``'a.aa[0].aaa'``.
+A string-iteratee is like a list-iteratee except that an object path is represented in object-path
+notation like ``'a.aa[0].aaa'``.
 
 For example:
 
@@ -192,23 +185,22 @@ which is the same as:
 Other Values
 ++++++++++++
 
-All other non-callable values will be used in a "pathgetter" iteratee as a top-level
-"key" to return the object value from. Callable values will be used directly as
-iteratees.
+All other non-callable values will be used in a "pathgetter" iteratee as a top-level "key" to return
+the object value from. Callable values will be used directly as iteratees.
 
 Note:
-    To reference a mapping that has a ``tuple`` key (e.g. {(1, 2): 'value}), use the
-    list-iteratee like ``fnc.map([(1, 2)], ...)``.
+    To reference a mapping that has a ``tuple`` key (e.g. {(1, 2): 'value}), use the list-iteratee
+    like ``fnc.map([(1, 2)], ...)``.
 
 
 Function Composition
 --------------------
 
-The primary method for function composition is ``fnc.compose`` combined with "partial"
-shorthand as needed.
+The primary method for function composition is ``fnc.compose`` combined with "partial" shorthand as
+needed.
 
-What is "partial" shorthand? Instead of passing callables to ``fnc.compose``, one can
-pass a tuple with the same arguments to ``functools.partial``.
+What is "partial" shorthand? Instead of passing callables to ``fnc.compose``, one can pass a tuple
+with the same arguments to ``functools.partial``.
 
 ::
 
@@ -236,24 +228,12 @@ pass a tuple with the same arguments to ``functools.partial``.
     x == {21: 2, 30: 1, 22: 2}
 
 Note:
-    The "partial" shorthand only supports invoking ``functools.partial`` using
-    positional arguments. If keyword argument partials are needed, then use
-    ``functools.partial`` directly.
+    The "partial" shorthand only supports invoking ``functools.partial`` using positional arguments.
+    If keyword argument partials are needed, then use ``functools.partial`` directly.
 """
 
 from .__version__ import __version__
-from .mappings import (
-    at,
-    defaults,
-    get,
-    has,
-    invert,
-    mapkeys,
-    mapvalues,
-    merge,
-    omit,
-    pick,
-)
+from .mappings import at, defaults, get, has, invert, mapkeys, mapvalues, merge, omit, pick
 from .sequences import (
     chunk,
     compact,

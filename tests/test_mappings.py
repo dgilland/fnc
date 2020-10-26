@@ -40,12 +40,8 @@ def test_defaults(case):
     [
         dict(args=("one.two", {"one": {"two": {"three": 4}}}), expected={"three": 4}),
         dict(args=("one.two.three", {"one": {"two": {"three": 4}}}), expected=4),
-        dict(
-            args=(["one", "two"], {"one": {"two": {"three": 4}}}), expected={"three": 4}
-        ),
-        dict(
-            args=(["one", "two", "three"], {"one": {"two": {"three": 4}}}), expected=4
-        ),
+        dict(args=(["one", "two"], {"one": {"two": {"three": 4}}}), expected={"three": 4}),
+        dict(args=(["one", "two", "three"], {"one": {"two": {"three": 4}}}), expected=4),
         dict(args=("one.four", {"one": {"two": {"three": 4}}}), expected=None),
         dict(
             args=("one.four.three", {"one": {"two": {"three": 4}}}),
@@ -102,13 +98,9 @@ def test_defaults(case):
             args=(["one", 1, "three", 1], {"one": ["two", {"three": [4, 5]}]}),
             expected=5,
         ),
-        dict(
-            args=("one.[1].three.[1]", {"one": ["two", {"three": [4, 5]}]}), expected=5
-        ),
+        dict(args=("one.[1].three.[1]", {"one": ["two", {"three": [4, 5]}]}), expected=5),
         dict(args=("one.1.three.1", {"one": ["two", {"three": [4, 5]}]}), expected=5),
-        dict(
-            args=("[1].two.three.[0]", ["one", {"two": {"three": [4, 5]}}]), expected=4
-        ),
+        dict(args=("[1].two.three.[0]", ["one", {"two": {"three": [4, 5]}}]), expected=4),
         dict(
             args=(
                 "[1].two.three[1][0].four[0]",
@@ -117,9 +109,7 @@ def test_defaults(case):
             expected=5,
         ),
         dict(args=("[42]", range(50)), expected=42),
-        dict(
-            args=("[0][0][0][0][0][0][0][0][0][0]", [[[[[[[[[[42]]]]]]]]]]), expected=42
-        ),
+        dict(args=("[0][0][0][0][0][0][0][0][0][0]", [[[[[[[[[[42]]]]]]]]]]), expected=42),
         dict(args=("[0][42]", [range(50)]), expected=42),
         dict(args=("a[0].b[42]", {"a": [{"b": range(50)}]}), expected=42),
         dict(
@@ -130,9 +120,7 @@ def test_defaults(case):
         dict(args=("one.1.hello", {"one": ["hello", None]}), expected=None),
         dict(args=("a", namedtuple("a", ["a", "b"])(1, 2)), expected=1),
         dict(args=(0, namedtuple("a", ["a", "b"])(1, 2)), expected=1),
-        dict(
-            args=("a.c.d", namedtuple("a", ["a", "b"])({"c": {"d": 1}}, 2)), expected=1
-        ),
+        dict(args=("a.c.d", namedtuple("a", ["a", "b"])({"c": {"d": 1}}, 2)), expected=1),
         dict(args=("update", {}), expected=None),
         dict(args=("extend", []), expected=None),
         dict(args=((1,), {(1,): {(2,): 3}}), expected={(2,): 3}),
@@ -180,9 +168,7 @@ def test_get(case):
             args=("one.[1].three.[1]", {"one": ["two", {"three": [4, 5]}]}),
             expected=True,
         ),
-        dict(
-            args=("one.1.three.1", {"one": ["two", {"three": [4, 5]}]}), expected=True
-        ),
+        dict(args=("one.1.three.1", {"one": ["two", {"three": [4, 5]}]}), expected=True),
         dict(
             args=("[1].two.three.[0]", ["one", {"two": {"three": [4, 5]}}]),
             expected=True,

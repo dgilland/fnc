@@ -85,9 +85,7 @@ def aspath(value):
     if not isinstance(value, str):
         return [value]
 
-    return [
-        _parse_path_token(token) for token in RE_PATH_KEY_DELIM.split(value) if token
-    ]
+    return [_parse_path_token(token) for token in RE_PATH_KEY_DELIM.split(value) if token]
 
 
 def _parse_path_token(token):
@@ -145,9 +143,9 @@ def before(method):
 
 def compose(*funcs):
     """
-    Create a function that is the composition of the provided functions, where each
-    successive invocation is supplied the return value of the previous. For example,
-    composing the functions ``f()``, ``g()``, and ``h()`` produces ``h(g(f()))``.
+    Create a function that is the composition of the provided functions, where each successive
+    invocation is supplied the return value of the previous. For example, composing the functions
+    ``f()``, ``g()``, and ``h()`` produces ``h(g(f()))``.
 
     Note:
         Each element in `funcs` can either be a callable or a ``tuple`` where the first
@@ -195,8 +193,8 @@ def compose(*funcs):
 
 def conformance(source):
     """
-    Creates a function that does a shallow comparison between a given object and the
-    `source` dictionary using :func:`conforms`.
+    Creates a function that does a shallow comparison between a given object and the `source`
+    dictionary using :func:`conforms`.
 
     Examples:
         >>> conformance({'a': 1})({'b': 2, 'a': 1})
@@ -218,10 +216,10 @@ def conformance(source):
 
 def conforms(source, target):
     """
-    Return whether the `target` object conforms to `source` where `source` is a
-    dictionary that contains key-value pairs which are compared against the same key-
-    values in `target`. If a key-value in `source` is a callable, then that callable is
-    used as a predicate against the corresponding key-value in `target`.
+    Return whether the `target` object conforms to `source` where `source` is a dictionary that
+    contains key-value pairs which are compared against the same key- values in `target`. If a key-
+    value in `source` is a callable, then that callable is used as a predicate against the
+    corresponding key-value in `target`.
 
     Examples:
         >>> conforms({'b': 2}, {'a': 1, 'b': 2})
@@ -396,8 +394,8 @@ def noop(*args, **kwargs):
 
 def over(*funcs):
     """
-    Creates a function that calls each function with the provided arguments and returns
-    the results as a ``tuple``.
+    Creates a function that calls each function with the provided arguments and returns the results
+    as a ``tuple``.
 
     Example:
         >>> minmax = over(min, max)
@@ -415,8 +413,8 @@ def over(*funcs):
 
 def overall(*funcs):
     """
-    Creates a function that returns ``True`` when all of the given functions return true
-    for the provided arguments.
+    Creates a function that returns ``True`` when all of the given functions return true for the
+    provided arguments.
 
     Example:
         >>> is_bool = overall(
@@ -439,8 +437,8 @@ def overall(*funcs):
 
 def overany(*funcs):
     """
-    Creates a function that returns ``True`` when any of the given functions return true
-    for the provided arguments.
+    Creates a function that returns ``True`` when any of the given functions return true for the
+    provided arguments.
 
     Example:
         >>> is_bool_like = overany(
@@ -507,10 +505,10 @@ def pickgetter(keys):
 
 def random(start=0, stop=1, floating=False):
     """
-    Produces a random number between `start` and `stop` (inclusive). If only one
-    argument is provided a number between 0 and the given number will be returned. If
-    floating is truthy or either `start` or `stop` are floats a floating-point number
-    will be returned instead of an integer.
+    Produces a random number between `start` and `stop` (inclusive). If only one argument is
+    provided a number between 0 and the given number will be returned. If floating is truthy or
+    either `start` or `stop` are floats a floating-point number will be returned instead of an
+    integer.
 
     Args:
         start (int): Minimum value.
@@ -553,11 +551,11 @@ def retry(  # noqa: C901
     on_exception=None
 ):
     """
-    Decorator that retries a function multiple times if it raises an exception with an
-    optional delay between each attempt. When a `delay` is supplied, there will be a
-    sleep period in between retry attempts. The first delay time will always be equal to
-    `delay`. After subsequent retries, the delay time will be scaled by `scale` up to
-    `max_delay`. If `max_delay` is ``0``, then `delay` can increase unbounded.
+    Decorator that retries a function multiple times if it raises an exception with an optional
+    delay between each attempt. When a `delay` is supplied, there will be a sleep period in between
+    retry attempts. The first delay time will always be equal to `delay`. After subsequent retries,
+    the delay time will be scaled by `scale` up to `max_delay`. If `max_delay` is ``0``, then
+    `delay` can increase unbounded.
 
     Args:
         attempts (int, optional): Number of retry attempts. Defaults to ``3``.
@@ -615,15 +613,10 @@ def retry(  # noqa: C901
         or (isinstance(jitter, number_types) and jitter < 0)
         or (
             isinstance(jitter, tuple)
-            and (
-                len(jitter) != 2
-                or not all(isinstance(jit, number_types) for jit in jitter)
-            )
+            and (len(jitter) != 2 or not all(isinstance(jit, number_types) for jit in jitter))
         )
     ):
-        raise ValueError(
-            "jitter must be a number greater than 0 or a 2-item tuple of " "numbers"
-        )
+        raise ValueError("jitter must be a number greater than 0 or a 2-item tuple of " "numbers")
 
     if not isinstance(exceptions, tuple) or not all(
         issubclass(exc, Exception) for exc in exceptions

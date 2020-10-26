@@ -27,9 +27,7 @@ def test_chunk(case):
     "case",
     [
         dict(args=([0, 1, 2, 3],), expected=[1, 2, 3]),
-        dict(
-            args=([True, False, None, True, 1, "foo"],), expected=[True, True, 1, "foo"]
-        ),
+        dict(args=([True, False, None, True, 1, "foo"],), expected=[True, True, 1, "foo"]),
     ],
 )
 def test_compact(case):
@@ -81,9 +79,7 @@ def test_countby(case):
         dict(args=([1, 2, 3, 4], [2, 4], [3, 5, 6]), expected=[1]),
         dict(args=([1, 1, 1, 1], [2, 4], [3, 5, 6]), expected=[1]),
         dict(args=(iter([1, 2, 3, 4]), iter([2, 4]), iter([1, 3, 5, 6])), expected=[]),
-        dict(
-            args=(iter([0, 1, 2, 3, 4]), iter([2, 4]), iter([1, 3, 5, 6])), expected=[0]
-        ),
+        dict(args=(iter([0, 1, 2, 3, 4]), iter([2, 4]), iter([1, 3, 5, 6])), expected=[0]),
     ],
 )
 def test_difference(case):
@@ -482,12 +478,8 @@ def test_interleave(case):
         dict(args=([],), expected=[]),
         dict(args=[iter([2, 1]), iter([2, 1])], expected=[2, 1]),
         dict(args=[iter([2, 1]), iter([1, 2])], expected=[2, 1]),
-        dict(
-            args=[iter([2, 1]), iter([1, 2]), iter([0, 1, 2]), iter([1])], expected=[1]
-        ),
-        dict(
-            args=[iter([1, 2]), iter([2, 1]), iter([0, 1, 2]), iter([1])], expected=[1]
-        ),
+        dict(args=[iter([2, 1]), iter([1, 2]), iter([0, 1, 2]), iter([1])], expected=[1]),
+        dict(args=[iter([1, 2]), iter([2, 1]), iter([0, 1, 2]), iter([1])], expected=[1]),
     ],
 )
 def test_intersection(case):
@@ -741,9 +733,7 @@ def test_reject(case):
     "case",
     [
         dict(args=([1, 2, 1, 3, 1], [1, 3, 2, 6, 4], [5]), expected=[1, 2, 3, 6, 4, 5]),
-        dict(
-            args=([dict(a=1), dict(a=2), dict(a=1)],), expected=[dict(a=1), dict(a=2)]
-        ),
+        dict(args=([dict(a=1), dict(a=2), dict(a=1)],), expected=[dict(a=1), dict(a=2)]),
     ],
 )
 def test_union(case):
@@ -795,9 +785,7 @@ def test_without(case):
     [
         dict(args=([1, 2, 3], [5, 2, 1, 4]), expected=[3, 5, 4]),
         dict(args=([1, 2, 5], [2, 3, 5], [3, 4, 5]), expected=[1, 4, 5]),
-        dict(
-            args=(iter([1, 2, 5]), iter([2, 3, 5]), iter([3, 4, 5])), expected=[1, 4, 5]
-        ),
+        dict(args=(iter([1, 2, 5]), iter([2, 3, 5]), iter([3, 4, 5])), expected=[1, 4, 5]),
         dict(
             args=(
                 iter(x for x in [1, 2, 5]),
