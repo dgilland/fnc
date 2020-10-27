@@ -111,14 +111,14 @@ def test(ctx):
 
 
 @task
-def docs(ctx, serve=False, port=8000):
+def docs(ctx, serve=False, bind="127.0.0.1", port=8000):
     """Build docs."""
     run("rm -rf docs/_build")
     run("sphinx-build -q -W -b html docs docs/_build/html")
 
     if serve:
-        print(f"Serving docs on port {port} ...")
-        run(f"cd docs/_build/html && python -m http.server {port}")
+        print(f"Serving docs on {bind} port {port} (http://{bind}:{port}/) ...")
+        run(f"python -m http.server -b {bind} --directory docs/_build/html {port}", hide=True)
 
 
 @task
