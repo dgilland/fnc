@@ -132,7 +132,7 @@ def build(ctx):
 def clean(ctx):
     """Remove temporary files related to development."""
     run("find . -type f -name '*.py[cod]' -delete -o -type d -name __pycache__ -delete")
-    run("rm -rf .tox .coverage .cache **/.egg* **/*.egg* dist build")
+    run("rm -rf .tox .coverage .cache .pytest_cache **/.egg* **/*.egg* dist build")
 
 
 @task(pre=[build])
