@@ -10,6 +10,7 @@ Guide
 
     installation
     api
+    devguide
 
 
 Project Info
