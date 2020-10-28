@@ -15,11 +15,13 @@ For managing multiple Python versions:
 
 - pyenv_
 - OS package manager (e.g. apt, yum, homebrew, etc)
+- Build from source
 
-For managing multiple Python virtualenvs:
+For managing Python virtualenvs:
 
-- pyenv-virtualenv_: Python virtualenv management
-- pew_: Python virtualenv management
+- pyenv-virtualenv_
+- pew_
+- python-venv_
 
 
 Tooling
@@ -181,6 +183,7 @@ This project uses `Github Actions <https://docs.github.com/en/free-pro-team@late
 .. _pyenv: https://github.com/pyenv/pyenv
 .. _pyenv-virtualenv: https://github.com/pyenv/pyenv-virtualenv
 .. _pew: https://github.com/berdario/pew
+.. _python-venv: https://docs.python.org/3/library/venv.html
 .. _black: https://black.readthedocs.io
 .. _isort: https://pycqa.github.io/isort/
 .. _docformatter: https://github.com/myint/docformatter
