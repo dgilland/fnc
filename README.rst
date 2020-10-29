@@ -13,7 +13,7 @@ Links
 - Project: https://github.com/dgilland/fnc
 - Documentation: https://fnc.readthedocs.io
 - PyPI: https://pypi.python.org/pypi/fnc/
-- TravisCI: https://travis-ci.org/dgilland/fnc
+- Github Actions: https://github.com/dgilland/fnc/actions
 
 
 Features
