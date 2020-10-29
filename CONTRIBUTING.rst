@@ -85,7 +85,7 @@ Ready to contribute? Here's how to set up ``fnc`` for local development.
 8. Commit your changes and push your branch to GitHub::
 
     $ git add .
-    $ git commit -m "<Detailed description of your changes.>"
+    $ git commit -m "<Detailed description of your changes>"
     $ git push origin name-of-your-bugfix-or-feature-branch
 
 9. Submit a pull request through GitHub.
@@ -97,4 +97,4 @@ Pull Request Guidelines
 Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
-2. The pull request should work for all versions Python that this project supports. Check https://travis-ci.org/dgilland/fnc/pull_requests and make sure that the all environments pass.
+2. The pull request should work for all versions Python that this project supports.
