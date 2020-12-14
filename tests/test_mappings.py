@@ -187,7 +187,7 @@ def test_has(case):
 
 def test_has__should_not_populate_defaultdict():
     data = defaultdict(list)
-    fnc.get("a", data)
+    fnc.has("a", data)
     assert data == {}
 
 
