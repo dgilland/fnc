@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import defaultdict, namedtuple
 
 import pytest
 
@@ -135,6 +135,12 @@ def test_get(case):
     assert fnc.get(*case["args"], **kwargs) == case["expected"]
 
 
+def test_get__should_not_populate_defaultdict():
+    data = defaultdict(list)
+    fnc.get("a", data)
+    assert data == {}
+
+
 @parametrize(
     "case",
     [
@@ -177,6 +183,12 @@ def test_get(case):
 )
 def test_has(case):
     assert fnc.has(*case["args"]) == case["expected"]
+
+
+def test_has__should_not_populate_defaultdict():
+    data = defaultdict(list)
+    fnc.get("a", data)
+    assert data == {}
 
 
 @parametrize(

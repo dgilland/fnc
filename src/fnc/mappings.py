@@ -107,6 +107,13 @@ def get(path, obj, *, default=None):
 
 
 def _get(key, obj, *, default=NotSet):
+    # Try dict.get.
+    if isinstance(obj, dict):
+        value = obj.get(key, default)
+        if value is NotSet:
+            raise KeyError("Key {!r} not found in {!r}".format(obj, key))
+        return value
+
     # Try item getter.
     try:
         return obj[key]

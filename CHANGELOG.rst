@@ -2,6 +2,9 @@ Changelog
 =========
 
 
+- Fix bug in ``get/has`` that caused ``defaultdict`` objects to get populated on key access.
+
+
 v0.5.0 (2020-10-23)
 -------------------
 
