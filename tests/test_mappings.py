@@ -128,6 +128,8 @@ def test_defaults(case):
         dict(args=([(1,), (2,)], {(1,): {(2,): 3}}), expected=3),
         dict(args=(object, {object: 1}), expected=1),
         dict(args=([object, object], {object: {object: 1}}), expected=1),
+        dict(args=("0.0.0.0.0.0.0.0.0.0", [[[[[[[[[[42]]]]]]]]]]), expected=42),
+        dict(args=("1.name", {1: {"name": "John Doe"}}), expected="John Doe"),
     ],
 )
 def test_get(case):

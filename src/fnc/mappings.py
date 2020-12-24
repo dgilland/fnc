@@ -107,36 +107,55 @@ def get(path, obj, *, default=None):
 
 
 def _get(key, obj, *, default=NotSet):
-    # Try dict.get.
     if isinstance(obj, dict):
-        value = obj.get(key, default)
-        if value is NotSet:
-            raise KeyError("Key {!r} not found in {!r}".format(obj, key))
-        return value
+        value = _get_dict(key, obj, default=default)
+    elif not isinstance(obj, (Mapping, Sequence)) or isinstance(obj, tuple):
+        value = _get_obj(key, obj, default=default)
+    else:
+        value = _get_item(key, obj, default=default)
 
-    # Try item getter.
+    if value is NotSet:
+        raise KeyError("Key {!r} not found in {!r}".format(obj, key))
+
+    return value
+
+
+def _get_dict(key, obj, *, default=NotSet):
+    value = obj.get(key, NotSet)
+    if value is NotSet:
+        value = default
+        if not isinstance(key, int):
+            try:
+                value = obj.get(int(key), default)
+            except Exception:
+                pass
+    return value
+
+
+def _get_item(key, obj, *, default=NotSet):
     try:
         return obj[key]
     except (KeyError, TypeError, IndexError):
         pass
 
-    # Try integer indexed item getter.
-    try:
-        return obj[int(key)]
-    except (KeyError, TypeError, IndexError, ValueError):
-        pass
-
-    # Try attribute access but only if obj isn't a mapping or sequence.
-    if not isinstance(obj, (Mapping, Sequence)) or isinstance(obj, tuple):
+    if not isinstance(key, int):
         try:
-            return getattr(obj, key)
-        except AttributeError:
+            return obj[int(key)]
+        except (KeyError, TypeError, IndexError, ValueError):
             pass
 
-    if default is NotSet:
-        raise KeyError("Key {!r} not found in {!r}".format(obj, key))
-
     return default
+
+
+def _get_obj(key, obj, *, default=NotSet):
+    value = _get_item(key, obj, default=NotSet)
+    if value is NotSet:
+        value = default
+        try:
+            value = getattr(obj, key)
+        except AttributeError:
+            pass
+    return value
 
 
 def has(path, obj):

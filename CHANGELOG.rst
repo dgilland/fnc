@@ -2,6 +2,9 @@ Changelog
 =========
 
 
+- Fix regression in ``v0.5.1`` that broke ``get/has`` for dictionaries and dot-delimited keys that reference integer dict-keys.
+
+
 v0.5.1 (2020-12-14)
 -------------------
 
