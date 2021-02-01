@@ -8,7 +8,7 @@ number_types = (int, float, Decimal)
 Sentinel = object()
 
 
-class _NotSet(object):
+class _Unset(object):
     """
     Represents an unset value.
 
@@ -19,7 +19,7 @@ class _NotSet(object):
         return False
 
 
-NotSet = _NotSet()
+UNSET = _Unset()
 
 
 class Container(object):

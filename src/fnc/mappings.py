@@ -11,7 +11,7 @@ from collections.abc import Mapping, Sequence
 
 import fnc
 
-from .helpers import NotSet, Sentinel, iterate
+from .helpers import UNSET, Sentinel, iterate
 
 
 def at(paths, obj):
@@ -85,10 +85,10 @@ def get(path, obj, *, default=None):
     Returns:
         object: Value of `obj` at path.
     """
-    if default is NotSet:
+    if default is UNSET:
         # When NotSet given for default, then this method will raise if path is
         # not present in obj.
-        sentinel = NotSet
+        sentinel = UNSET
     else:
         # When a returnable default is given, use a sentinel value to detect
         # when _get() returns a default value for a missing path so we can exit
@@ -106,7 +106,7 @@ def get(path, obj, *, default=None):
     return result
 
 
-def _get(key, obj, *, default=NotSet):
+def _get(key, obj, *, default=UNSET):
     if isinstance(obj, dict):
         value = _get_dict(key, obj, default=default)
     elif not isinstance(obj, (Mapping, Sequence)) or isinstance(obj, tuple):
@@ -114,15 +114,15 @@ def _get(key, obj, *, default=NotSet):
     else:
         value = _get_item(key, obj, default=default)
 
-    if value is NotSet:
+    if value is UNSET:
         raise KeyError("Key {!r} not found in {!r}".format(obj, key))
 
     return value
 
 
-def _get_dict(key, obj, *, default=NotSet):
-    value = obj.get(key, NotSet)
-    if value is NotSet:
+def _get_dict(key, obj, *, default=UNSET):
+    value = obj.get(key, UNSET)
+    if value is UNSET:
         value = default
         if not isinstance(key, int):
             try:
@@ -132,7 +132,7 @@ def _get_dict(key, obj, *, default=NotSet):
     return value
 
 
-def _get_item(key, obj, *, default=NotSet):
+def _get_item(key, obj, *, default=UNSET):
     try:
         return obj[key]
     except (KeyError, TypeError, IndexError):
@@ -147,9 +147,9 @@ def _get_item(key, obj, *, default=NotSet):
     return default
 
 
-def _get_obj(key, obj, *, default=NotSet):
-    value = _get_item(key, obj, default=NotSet)
-    if value is NotSet:
+def _get_obj(key, obj, *, default=UNSET):
+    value = _get_item(key, obj, default=UNSET)
+    if value is UNSET:
         value = default
         try:
             value = getattr(obj, key)
@@ -183,7 +183,7 @@ def has(path, obj):
         bool: Whether `obj` has `path`.
     """
     try:
-        get(path, obj, default=NotSet)
+        get(path, obj, default=UNSET)
         return True
     except KeyError:
         return False
