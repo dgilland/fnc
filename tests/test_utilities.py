@@ -71,7 +71,7 @@ def test_before():
     "case",
     [
         dict(
-            funcs=(lambda x: "!!!" + x + "!!!", lambda x: "Hi {0}".format(x)),
+            funcs=(lambda x: "!!!" + x + "!!!", lambda x: f"Hi {x}"),
             args=("Bob",),
             expected="Hi !!!Bob!!!",
         ),

@@ -115,7 +115,7 @@ def _get(key, obj, *, default=UNSET):
         value = _get_item(key, obj, default=default)
 
     if value is UNSET:
-        raise KeyError("Key {!r} not found in {!r}".format(obj, key))
+        raise KeyError(f"Key {obj!r} not found in {key!r}")
 
     return value
 
