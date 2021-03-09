@@ -232,7 +232,8 @@ Note:
     If keyword argument partials are needed, then use ``functools.partial`` directly.
 """
 
-from .__version__ import __version__
+__version__ = "0.5.2"
+
 from .mappings import at, defaults, get, has, invert, mapkeys, mapvalues, merge, omit, pick
 from .sequences import (
     chunk,
