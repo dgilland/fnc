@@ -313,9 +313,9 @@ def pick(keys, obj):
     Returns:
         dict: Dict containg picked properties.
     """
-    items = []
+    result = {}
     for key in keys:
         value = _get(key, obj, default=Sentinel)
         if value is not Sentinel:
-            items.append((key, value))
-    return dict(items)
+            result[key] = value
+    return result
