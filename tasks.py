@@ -3,7 +3,7 @@ This module provides the CLI interface for invoke tasks.
 
 All tasks can be executed from this file's directory using:
 
-    $ inv <task>
+$ inv <task>
 
 Where <task> is a function defined below with the @task decorator.
 """
@@ -77,6 +77,8 @@ def lint(ctx):
     linters = {"flake8": flake8, "pylint": pylint}
     failures = []
 
+    print(f"Preparing to run linters: {', '.join(linters)}\n")
+
     for name, linter in linters.items():
         print(f"Running {name}")
         try:
@@ -90,11 +92,11 @@ def lint(ctx):
 
     if failures:
         failed = ", ".join(failures)
-        raise Exit(f"ERROR: Linters that failed: {failed}")
+        raise Exit(f"ERROR: linters failed: {failed}")
 
 
 @task(help={"args": "Override default pytest arguments"})
-def unit(ctx, args=f"{TEST_TARGETS} --cov={PACKAGE_NAME} --flake8 --pylint"):
+def test(ctx, args=f"{TEST_TARGETS} --cov={PACKAGE_NAME}"):
     """Run unit tests using pytest."""
     tox_env_site_packages_dir = os.getenv("TOX_ENV_SITE_PACKAGES_DIR")
     if tox_env_site_packages_dir:
@@ -106,7 +108,7 @@ def unit(ctx, args=f"{TEST_TARGETS} --cov={PACKAGE_NAME} --flake8 --pylint"):
 
 
 @task
-def test(ctx):
+def ci(ctx):
     """Run linters and tests."""
     print("Building package")
     build(ctx)
@@ -118,7 +120,7 @@ def test(ctx):
     lint(ctx)
 
     print("Running unit tests")
-    unit(ctx, args=f"{TEST_TARGETS} --cov={PACKAGE_NAME}")
+    test(ctx)
 
 
 @task
@@ -136,14 +138,14 @@ def docs(ctx, serve=False, bind="127.0.0.1", port=8000):
 def build(ctx):
     """Build Python package."""
     run("rm -rf dist build docs/_build")
-    run("python setup.py -q sdist bdist_wheel")
+    run("python -m build")
 
 
 @task
 def clean(ctx):
     """Remove temporary files related to development."""
     run("find . -type f -name '*.py[cod]' -delete -o -type d -name __pycache__ -delete")
-    run("rm -rf .tox .coverage .cache .pytest_cache **/.egg* **/*.egg* dist build")
+    run("rm -rf .tox .coverage .cache .pytest_cache .mypy_cache **/.egg* **/*.egg* dist build")
 
 
 @task(pre=[build])
