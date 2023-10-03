@@ -171,7 +171,7 @@ For more details and examples, please see the full documentation at https://fnc.
 .. |version| image:: https://img.shields.io/pypi/v/fnc.svg?style=flat-square
     :target: https://pypi.python.org/pypi/fnc/
 
-.. |build| image:: https://img.shields.io/github/workflow/status/dgilland/fnc/Main/master?style=flat-square
+.. |build| image:: https://img.shields.io/github/actions/workflow/status/dgilland/fnc/main.yml?branch=master&style=flat-square
     :target: https://github.com/dgilland/fnc/actions
 
 .. |coveralls| image:: https://img.shields.io/coveralls/dgilland/fnc/master.svg?style=flat-square
