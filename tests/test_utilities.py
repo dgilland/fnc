@@ -345,9 +345,9 @@ def test_retry_success(mocksleep, case):
 def test_retry_error(mocksleep, case):
     @fnc.retry(**case["args"])
     def func():
-        raise Exception()
+        raise ValueError()
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         func()
 
     assert mocksleep.call_count == case["expected"]["count"]
@@ -376,9 +376,9 @@ def test_retry_error(mocksleep, case):
 def test_retry_jitter(mocksleep, case):
     @fnc.retry(**case["args"])
     def func():
-        raise Exception()
+        raise ValueError()
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         func()
 
     delay_calls = [mock.call(time) for time in case["unexpected"]]
@@ -424,9 +424,9 @@ def test_retry_on_exception(mocksleep):
 
     @fnc.retry(attempts=attempts, on_exception=on_exception)
     def func():
-        raise Exception()
+        raise ValueError()
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         func()
 
     assert error_counts == {key: True for key in range(1, attempts + 1)}

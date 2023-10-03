@@ -17,8 +17,8 @@ import fnc
 from .helpers import Container, iscollection, isgenerator
 
 
-_filter = filter
-_map = map
+_filter = filter  # pylint: disable=used-before-assignment
+_map = map  # pylint: disable=used-before-assignment
 
 
 def chunk(size, seq):
