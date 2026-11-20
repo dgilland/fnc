@@ -74,6 +74,8 @@ def test_countby(case):
 @parametrize(
     "case",
     [
+        dict(args=([{1}, {2}], [{1}]), expected=[{2}]),
+        dict(args=([[1], [2]], [[1]]), expected=[[2]]),
         dict(args=([1, 2, 3, 4],), expected=[1, 2, 3, 4]),
         dict(args=([1, 2, 3, 4], []), expected=[1, 2, 3, 4]),
         dict(args=([1, 2, 3, 4], [2, 4], [3, 5, 6]), expected=[1]),
@@ -106,6 +108,8 @@ def test_differenceby(case):
 @parametrize(
     "case",
     [
+        dict(args=([{1}, {1}, {2}, {1}, {2}],), expected=[{1}, {2}]),
+        dict(args=([{"a": 1}, {"a": 1}],), expected=[{"a": 1}]),
         dict(args=([1, 2, 3, 2, 1, 5, 6, 5, 5, 5],), expected=[2, 1, 5]),
         dict(args=([1, 2], [3, 2], [1, 5], [6, 5, 5, 5]), expected=[2, 1, 5]),
         dict(args=([1, 2], [3, 2], [1, 5], [6, 5, 5, 5]), expected=[2, 1, 5]),
@@ -470,6 +474,8 @@ def test_interleave(case):
 @parametrize(
     "case",
     [
+        dict(args=([{1}, {2}], [{1}]), expected=[{1}]),
+        dict(args=([[1], [2]], [[1]]), expected=[[1]]),
         dict(args=([1, 2, 3], [101, 2, 1, 10], [2, 1]), expected=[1, 2]),
         dict(args=([1, 1, 2, 2], [1, 1, 2, 2]), expected=[1, 2]),
         dict(args=([1, 2, 3], [4]), expected=[]),
@@ -732,12 +738,42 @@ def test_reject(case):
 @parametrize(
     "case",
     [
+        dict(args=([{1}, {1}, {2}],), expected=[{1}, {2}]),
+        dict(args=([[1], [1], [2]],), expected=[[1], [2]]),
+        dict(args=([frozenset({1}), frozenset({1})],), expected=[frozenset({1})]),
         dict(args=([1, 2, 1, 3, 1], [1, 3, 2, 6, 4], [5]), expected=[1, 2, 3, 6, 4, 5]),
         dict(args=([dict(a=1), dict(a=2), dict(a=1)],), expected=[dict(a=1), dict(a=2)]),
     ],
 )
 def test_union(case):
     assert list(fnc.union(*case["args"])) == case["expected"]
+
+
+@parametrize("first, second", [({1}, frozenset({1})), (frozenset({1}), {1})])
+def test_set_operations_with_equal_set_and_frozenset(first, second):
+    result = list(fnc.union([first, second]))
+    assert len(result) == 1
+    assert result[0] is first
+    assert list(fnc.intersection([first], [second])) == [first]
+    assert list(fnc.difference([first], [second])) == []
+    assert list(fnc.duplicates([first, second])) == [second]
+
+
+@parametrize("reverse", [False, True])
+def test_set_operations_compare_across_hashability(reverse):
+    class UnhashableInt(int):
+        __hash__ = None
+
+    first, second = (1, UnhashableInt(1))
+    if reverse:
+        first, second = second, first
+
+    result = list(fnc.union([first, second]))
+    assert len(result) == 1
+    assert result[0] is first
+    assert list(fnc.intersection([first], [second])) == [first]
+    assert list(fnc.difference([first], [second])) == []
+    assert list(fnc.duplicates([first, second])) == [second]
 
 
 @parametrize(
