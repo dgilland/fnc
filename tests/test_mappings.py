@@ -137,6 +137,52 @@ def test_get(case):
     assert fnc.get(*case["args"], **kwargs) == case["expected"]
 
 
+@parametrize("obj", [(1, 2), namedtuple("Point", ["x", "y"])(1, 2), ()])
+@parametrize("index", [2, -3])
+def test_get_missing_tuple_index(obj, index):
+    default = object()
+    assert fnc.get(index, obj) is None
+    assert fnc.get(index, obj, default=default) is default
+
+
+@parametrize("obj", [(1, 2), namedtuple("Point", ["x", "y"])(1, 2), ()])
+@parametrize("index", [2, -3])
+def test_has_missing_tuple_index(obj, index):
+    assert fnc.has(index, obj) is False
+
+
+@parametrize("index", [2, -3])
+def test_missing_nested_tuple_index(index):
+    data = {"point": namedtuple("Point", ["x", "y"])(1, 2)}
+    default = [{"x": 99}]
+    assert fnc.get(["point", index, "x"], data, default=default) is default
+    assert fnc.has(["point", index], data) is False
+
+
+@parametrize("obj", [(1, 2), namedtuple("Point", ["x", "y"])(1, 2)])
+@parametrize("index, expected", [(0, 1), (-1, 2)])
+def test_existing_tuple_index(obj, index, expected):
+    assert fnc.get(index, obj) == expected
+    assert fnc.has(index, obj) is True
+
+
+def test_namedtuple_field_lookup():
+    point = namedtuple("Point", ["x", "y"])(1, 2)
+    assert fnc.get("y", point) == 2
+    assert fnc.has("y", point) is True
+    assert fnc.has("z", point) is False
+
+
+def test_get_propagates_attribute_type_error():
+    class BrokenAttribute:
+        @property
+        def value(self):
+            raise TypeError("attribute failed")
+
+    with pytest.raises(TypeError, match="attribute failed"):
+        fnc.get("value", BrokenAttribute())
+
+
 def test_get__should_not_populate_defaultdict():
     data = defaultdict(list)
     fnc.get("a", data)

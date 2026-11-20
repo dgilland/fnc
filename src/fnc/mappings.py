@@ -151,6 +151,8 @@ def _get_obj(key, obj, *, default=UNSET):
     value = _get_item(key, obj, default=UNSET)
     if value is UNSET:
         value = default
+        if not isinstance(key, str):
+            return value
         try:
             value = getattr(obj, key)
         except AttributeError:
