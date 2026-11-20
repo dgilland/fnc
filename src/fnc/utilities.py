@@ -576,9 +576,10 @@ def retry(  # noqa: C901
             Exceptions not in the tuple will be ignored. Defaults to ``(Exception,)``
             (all exceptions).
         on_exception (function, optional): Function that is called when a retryable
-            exception is caught. It is invoked with ``on_exception(exc, attempt)`` where
-            ``exc`` is the caught exception and ``attempt`` is the attempt count. All
-            arguments are optional. Defaults to ``None``.
+            exception is caught, including on the final attempt. It is invoked with
+            ``on_exception(exc)`` where ``exc`` is the caught exception. The current
+            attempt count (starting at 1) is available as ``exc.retry["attempt"]``.
+            Exceptions raised by the callback propagate immediately. Defaults to ``None``.
 
     Example:
 
@@ -592,6 +593,16 @@ def retry(  # noqa: C901
         something
         something
         caught something
+
+        >>> failed_attempts = []
+        >>> def on_exception(exc):
+        ...     failed_attempts.append(exc.retry["attempt"])
+        >>> @retry(attempts=2, delay=0, on_exception=on_exception)
+        ... def fail():
+        ...     raise ValueError('original failure')
+        >>> try: fail()
+        ... except ValueError: print(failed_attempts)
+        [1, 2]
     """
     if isinstance(exceptions, Exception):  # pragma: no cover
         exceptions = (exceptions,)
