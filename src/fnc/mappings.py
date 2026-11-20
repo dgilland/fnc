@@ -7,7 +7,7 @@ A mapping includes dictionaries, lists, strings, ``collections.abc.Mapping`` and
 For functions that use :func:`get`, non-mapping object values can be selected from class attributes.
 """
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 
 import fnc
 
@@ -293,6 +293,9 @@ def omit(keys, obj):
     Returns:
         dict: Dictionary with `keys` omitted.
     """
+    if isinstance(keys, Iterator):
+        keys = tuple(keys)
+
     return {key: value for key, value in iterate(obj) if key not in keys}
 
 
