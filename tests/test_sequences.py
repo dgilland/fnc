@@ -781,6 +781,30 @@ def test_without(case):
 
 
 @parametrize(
+    "values, seq, expected",
+    [
+        (iter([2, 4]), [1, 2, 3, 2, 4, 4], [1, 3]),
+        ((value for value in [[2], [4]]), [[1], [2], [3], [2], [4]], [[1], [3]]),
+        (iter(()), [1, 2], [1, 2]),
+    ],
+)
+def test_without_with_iterator_values(values, seq, expected):
+    assert list(fnc.without(values, seq)) == expected
+
+
+def test_without_preserves_string_membership():
+    assert list(fnc.without("abcd", ["ab", "ef"])) == ["ef"]
+
+
+def test_without_preserves_mutable_exclusions():
+    excluded = [2]
+    result = fnc.without(excluded, [1, 2, 3])
+    assert next(result) == 1
+    excluded.append(3)
+    assert list(result) == []
+
+
+@parametrize(
     "case",
     [
         dict(args=([1, 2, 3], [5, 2, 1, 4]), expected=[3, 5, 4]),
