@@ -8,6 +8,7 @@ identify them as generators. Otherwise, functions that return concrete values wi
 """
 
 from collections import Counter, deque
+from collections.abc import Iterator
 from functools import partial
 import itertools
 from operator import not_
@@ -918,6 +919,9 @@ def without(values, seq):
     Yields:
         Elements not in `values`.
     """
+    if isinstance(values, Iterator):
+        values = tuple(values)
+
     for item in seq:
         if item not in values:
             yield item
