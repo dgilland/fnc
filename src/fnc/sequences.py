@@ -461,6 +461,7 @@ def groupall(iteratees, seq):
     Returns:
         dict: Results of recursively grouping by all `iteratees`.
     """
+    iteratees = tuple(iteratees or ())
     if not iteratees:
         return seq
 

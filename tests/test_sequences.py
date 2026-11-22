@@ -465,6 +465,28 @@ def test_groupall(case):
     assert fnc.groupall(*case["args"]) == case["expected"]
 
 
+@parametrize("make_iteratees", [list, tuple, iter, lambda items: (item for item in items)])
+@parametrize("seq", [[], [{"a": 1}]])
+def test_groupall_empty_iteratees_preserve_source(make_iteratees, seq):
+    assert fnc.groupall(make_iteratees([]), seq) is seq
+
+
+def test_groupall_empty_iteratees_do_not_consume_source():
+    seq = iter([{"a": 1}])
+    assert fnc.groupall(iter(()), seq) is seq
+    assert list(seq) == [{"a": 1}]
+
+
+@parametrize("make_iteratees", [iter, lambda items: (item for item in items)])
+def test_groupall_iterator_iteratees_group_each_branch(make_iteratees):
+    seq = [{"a": 1, "b": 2}, {"a": 2, "b": 3}, {"a": 1, "b": 4}]
+    assert fnc.groupall(make_iteratees(["a", "b"]), seq) == {
+        1: {2: [{"a": 1, "b": 2}], 4: [{"a": 1, "b": 4}]},
+        2: {3: [{"a": 2, "b": 3}]},
+    }
+    assert fnc.groupall(make_iteratees(["a"]), []) == {}
+
+
 @parametrize(
     "case",
     [
