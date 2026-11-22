@@ -1,5 +1,6 @@
 """General utility functions."""
 
+from collections.abc import Iterable, Iterator
 from functools import partial, wraps
 from random import randint, uniform
 import re
@@ -107,12 +108,17 @@ def atgetter(paths):
         >>> get_id_name({"data": {"id": 1, "name": "foo"}})
         (1, 'foo')
 
+    Note:
+        Iterator inputs must be finite; they are consumed when the getter is created.
+
     Args:
         paths (Iterable): Path values to fetch from object.
 
     Returns:
         callable: Function like ``f(obj): fnc.at(paths, obj)``.
     """
+    if isinstance(paths, Iterator):
+        paths = tuple(paths)
     return partial(fnc.at, paths)
 
 
@@ -489,12 +495,17 @@ def pickgetter(keys):
         >>> pick_ab({"a": 1, "b": 2, "c": 4}) == {"a": 1, "b": 2}
         True
 
+    Note:
+        Iterator inputs must be finite; they are consumed when the getter is created.
+
     Args:
         keys (Iterable): Keys to fetch from object.
 
     Returns:
         callable: Function like ``f(obj): fnc.pick(keys, obj)``.
     """
+    if isinstance(keys, Iterator):
+        keys = tuple(keys)
     return partial(fnc.pick, keys)
 
 

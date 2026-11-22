@@ -258,6 +258,35 @@ def test_pickgetter(case):
 
 
 @parametrize(
+    "factory, expected",
+    [(fnc.atgetter, [(1, 2), (3, 4)]), (fnc.pickgetter, [{"a": 1, "b": 2}, {"a": 3, "b": 4}])],
+)
+@parametrize("make_keys", [iter, lambda keys: (key for key in keys)])
+def test_getters_reuse_iterator_keys(factory, expected, make_keys):
+    getter = factory(make_keys(["a", "b"]))
+    objects = [{"a": 1, "b": 2}, {"a": 3, "b": 4}]
+    assert [getter(obj) for obj in objects] == expected
+
+
+@parametrize(
+    "factory, expected",
+    [(fnc.atgetter, (1, 2)), (fnc.pickgetter, {"a": 1, "b": 2})],
+)
+def test_getters_preserve_mutable_key_lists(factory, expected):
+    keys = ["a"]
+    getter = factory(keys)
+    keys.append("b")
+    assert getter({"a": 1, "b": 2}) == expected
+
+
+@parametrize("factory, expected", [(fnc.atgetter, ()), (fnc.pickgetter, {})])
+def test_getters_reuse_empty_key_iterators(factory, expected):
+    getter = factory(iter(()))
+    assert getter({"a": 1}) == expected
+    assert getter({"a": 2}) == expected
+
+
+@parametrize(
     "case",
     [
         dict(args=(), expected={"type": int, "min": 0, "max": 1}),
