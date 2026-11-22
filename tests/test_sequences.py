@@ -1,3 +1,4 @@
+import itertools
 import math
 
 import pytest
@@ -21,6 +22,42 @@ parametrize = pytest.mark.parametrize
 )
 def test_chunk(case):
     assert list(fnc.chunk(*case["args"])) == case["expected"]
+
+
+def test_chunk_does_not_consume_the_next_batch_before_yielding():
+    seen = []
+
+    def source():
+        for value in [1, 2, 3, 4, 5]:
+            seen.append(value)
+            yield value
+
+    result = fnc.chunk(2, source())
+    assert seen == []
+    assert next(result) == [1, 2]
+    assert seen == [1, 2]
+    assert next(result) == [3, 4]
+    assert seen == [1, 2, 3, 4]
+    assert next(result) == [5]
+    assert seen == [1, 2, 3, 4, 5]
+    with pytest.raises(StopIteration):
+        next(result)
+
+
+@parametrize("size", [1, 2, 3])
+def test_chunk_yields_complete_batch_before_source_error(size):
+    def source():
+        yield from range(size)
+        raise RuntimeError("next batch requested")
+
+    result = fnc.chunk(size, source())
+    assert next(result) == list(range(size))
+    with pytest.raises(RuntimeError, match="next batch requested"):
+        next(result)
+
+
+def test_chunk_empty_source():
+    assert list(fnc.chunk(2, iter(()))) == []
 
 
 @parametrize(
@@ -74,6 +111,8 @@ def test_countby(case):
 @parametrize(
     "case",
     [
+        dict(args=([{1}, {2}], [{1}]), expected=[{2}]),
+        dict(args=([[1], [2]], [[1]]), expected=[[2]]),
         dict(args=([1, 2, 3, 4],), expected=[1, 2, 3, 4]),
         dict(args=([1, 2, 3, 4], []), expected=[1, 2, 3, 4]),
         dict(args=([1, 2, 3, 4], [2, 4], [3, 5, 6]), expected=[1]),
@@ -106,6 +145,8 @@ def test_differenceby(case):
 @parametrize(
     "case",
     [
+        dict(args=([{1}, {1}, {2}, {1}, {2}],), expected=[{1}, {2}]),
+        dict(args=([{"a": 1}, {"a": 1}],), expected=[{"a": 1}]),
         dict(args=([1, 2, 3, 2, 1, 5, 6, 5, 5, 5],), expected=[2, 1, 5]),
         dict(args=([1, 2], [3, 2], [1, 5], [6, 5, 5, 5]), expected=[2, 1, 5]),
         dict(args=([1, 2], [3, 2], [1, 5], [6, 5, 5, 5]), expected=[2, 1, 5]),
@@ -142,7 +183,7 @@ def test_duplicates(case):
         ),
         dict(
             args=(
-                lambda x: round(x),
+                round,
                 [1.5, 2.3],
                 [3.7, 2.5],
                 [1.1, 5.8],
@@ -492,6 +533,8 @@ def test_interleave(case):
 @parametrize(
     "case",
     [
+        dict(args=([{1}, {2}], [{1}]), expected=[{1}]),
+        dict(args=([[1], [2]], [[1]]), expected=[[1]]),
         dict(args=([1, 2, 3], [101, 2, 1, 10], [2, 1]), expected=[1, 2]),
         dict(args=([1, 1, 2, 2], [1, 1, 2, 2]), expected=[1, 2]),
         dict(args=([1, 2, 3], [4]), expected=[]),
@@ -521,7 +564,7 @@ def test_intersection(case):
             expected=[{"a": 1}, {"a": 2}],
         ),
         dict(
-            args=(lambda x: round(x), [1.5, 1.7, 2.1, 2.8], [1, 1, 2, 2]),
+            args=(round, [1.5, 1.7, 2.1, 2.8], [1, 1, 2, 2]),
             expected=[1.5],
         ),
     ],
@@ -644,6 +687,50 @@ def test_mapcat(case):
     assert list(fnc.mapcat(*case["args"])) == case["expected"]
 
 
+def test_mapcat_consumes_only_the_current_mapped_iterable():
+    seen = []
+
+    def source():
+        for value in range(3):
+            seen.append(value)
+            yield value
+
+    result = fnc.mapcat(lambda value: iter([value, value]), source())
+    assert seen == []
+    assert next(result) == 0
+    assert seen == [0]
+    assert next(result) == 0
+    assert seen == [0]
+    assert next(result) == 1
+    assert seen == [0, 1]
+    assert list(result) == [1, 2, 2]
+    assert seen == [0, 1, 2]
+
+
+def test_mapcat_can_yield_a_prefix_without_exhausting_source():
+    def source():
+        for value in itertools.count():
+            if value == 3:
+                raise AssertionError("source read beyond the requested prefix")
+            yield value
+
+    result = fnc.mapcat(lambda value: [value], source())
+    assert list(itertools.islice(result, 3)) == [0, 1, 2]
+
+
+@parametrize(
+    "case",
+    [
+        dict(args=(None, []), expected=[]),
+        dict(args=(None, [[[1]], [[2]]]), expected=[[1], [2]]),
+        dict(args=("values", [{"values": [1, 2]}, {"values": []}]), expected=[1, 2]),
+        dict(args=(lambda x, y: (x, y), iter([1, 2]), iter([3])), expected=[1, 3]),
+    ],
+)
+def test_mapcat_preserves_mapping_and_concatenation(case):
+    assert list(fnc.mapcat(*case["args"])) == case["expected"]
+
+
 @parametrize(
     "case",
     [
@@ -754,12 +841,42 @@ def test_reject(case):
 @parametrize(
     "case",
     [
+        dict(args=([{1}, {1}, {2}],), expected=[{1}, {2}]),
+        dict(args=([[1], [1], [2]],), expected=[[1], [2]]),
+        dict(args=([frozenset({1}), frozenset({1})],), expected=[frozenset({1})]),
         dict(args=([1, 2, 1, 3, 1], [1, 3, 2, 6, 4], [5]), expected=[1, 2, 3, 6, 4, 5]),
         dict(args=([dict(a=1), dict(a=2), dict(a=1)],), expected=[dict(a=1), dict(a=2)]),
     ],
 )
 def test_union(case):
     assert list(fnc.union(*case["args"])) == case["expected"]
+
+
+@parametrize("first, second", [({1}, frozenset({1})), (frozenset({1}), {1})])
+def test_set_operations_with_equal_set_and_frozenset(first, second):
+    result = list(fnc.union([first, second]))
+    assert len(result) == 1
+    assert result[0] is first
+    assert list(fnc.intersection([first], [second])) == [first]
+    assert list(fnc.difference([first], [second])) == []
+    assert list(fnc.duplicates([first, second])) == [second]
+
+
+@parametrize("reverse", [False, True])
+def test_set_operations_compare_across_hashability(reverse):
+    class UnhashableInt(int):
+        __hash__ = None
+
+    first, second = (1, UnhashableInt(1))
+    if reverse:
+        first, second = second, first
+
+    result = list(fnc.union([first, second]))
+    assert len(result) == 1
+    assert result[0] is first
+    assert list(fnc.intersection([first], [second])) == [first]
+    assert list(fnc.difference([first], [second])) == []
+    assert list(fnc.duplicates([first, second])) == [second]
 
 
 @parametrize(
@@ -803,6 +920,30 @@ def test_without(case):
 
 
 @parametrize(
+    "values, seq, expected",
+    [
+        (iter([2, 4]), [1, 2, 3, 2, 4, 4], [1, 3]),
+        ((value for value in [[2], [4]]), [[1], [2], [3], [2], [4]], [[1], [3]]),
+        (iter(()), [1, 2], [1, 2]),
+    ],
+)
+def test_without_with_iterator_values(values, seq, expected):
+    assert list(fnc.without(values, seq)) == expected
+
+
+def test_without_preserves_string_membership():
+    assert list(fnc.without("abcd", ["ab", "ef"])) == ["ef"]
+
+
+def test_without_preserves_mutable_exclusions():
+    excluded = [2]
+    result = fnc.without(excluded, [1, 2, 3])
+    assert next(result) == 1
+    excluded.append(3)
+    assert list(result) == []
+
+
+@parametrize(
     "case",
     [
         dict(args=([1, 2, 3], [5, 2, 1, 4]), expected=[3, 5, 4]),
@@ -820,3 +961,24 @@ def test_without(case):
 )
 def test_xor(case):
     assert list(fnc.xor(*case["args"])) == case["expected"]
+
+
+@parametrize("make_seq", [list, iter, lambda items: (item for item in items)])
+@parametrize(
+    "seq, expected",
+    [
+        ([], []),
+        ([1], [1]),
+        ([2, 1, 2, 3, 1], [2, 1, 3]),
+        ([[1], [1], [2], [1]], [[1], [2]]),
+        ([{"a": 1}, {"a": 1}, {"a": 2}], [{"a": 1}, {"a": 2}]),
+    ],
+)
+def test_xor_single_input_preserves_only_first_occurrences(make_seq, seq, expected):
+    assert list(fnc.xor(make_seq(seq))) == expected
+    assert list(fnc.xor(make_seq(seq), [])) == expected
+
+
+def test_xor_multiple_inputs_ignore_duplicates_within_each_input():
+    assert list(fnc.xor([1, 1, 2], [2, 2, 3])) == [1, 3]
+    assert list(fnc.xor([1, 1], [1, 1], [1, 1])) == [1]

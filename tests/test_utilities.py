@@ -258,6 +258,35 @@ def test_pickgetter(case):
 
 
 @parametrize(
+    "factory, expected",
+    [(fnc.atgetter, [(1, 2), (3, 4)]), (fnc.pickgetter, [{"a": 1, "b": 2}, {"a": 3, "b": 4}])],
+)
+@parametrize("make_keys", [iter, lambda keys: (key for key in keys)])
+def test_getters_reuse_iterator_keys(factory, expected, make_keys):
+    getter = factory(make_keys(["a", "b"]))
+    objects = [{"a": 1, "b": 2}, {"a": 3, "b": 4}]
+    assert [getter(obj) for obj in objects] == expected
+
+
+@parametrize(
+    "factory, expected",
+    [(fnc.atgetter, (1, 2)), (fnc.pickgetter, {"a": 1, "b": 2})],
+)
+def test_getters_preserve_mutable_key_lists(factory, expected):
+    keys = ["a"]
+    getter = factory(keys)
+    keys.append("b")
+    assert getter({"a": 1, "b": 2}) == expected
+
+
+@parametrize("factory, expected", [(fnc.atgetter, ()), (fnc.pickgetter, {})])
+def test_getters_reuse_empty_key_iterators(factory, expected):
+    getter = factory(iter(()))
+    assert getter({"a": 1}) == expected
+    assert getter({"a": 2}) == expected
+
+
+@parametrize(
     "case",
     [
         dict(args=(), expected={"type": int, "min": 0, "max": 1}),
@@ -295,6 +324,33 @@ def test_random(case):
         rnd = fnc.random(*case["args"], **kwargs)
         assert isinstance(rnd, case["expected"]["type"])
         assert case["expected"]["min"] <= rnd <= case["expected"]["max"]
+
+
+@parametrize(
+    "args, kwargs, expected, primitive",
+    [
+        ((10,), {}, (0, 10), "randint"),
+        ((0,), {}, (0, 0), "randint"),
+        ((-10,), {}, (-10, 0), "randint"),
+        ((2.5,), {}, (0, 2.5), "uniform"),
+        ((-2.5,), {}, (-2.5, 0), "uniform"),
+        ((10,), {"floating": True}, (0, 10), "uniform"),
+        ((), {"start": 10}, (0, 10), "randint"),
+        ((), {"stop": 10}, (0, 10), "randint"),
+        ((), {"stop": 0}, (0, 0), "randint"),
+        ((), {}, (0, 1), "randint"),
+        ((), {"floating": True}, (0, 1), "uniform"),
+        ((5, 10), {}, (5, 10), "randint"),
+        ((10, 5), {}, (5, 10), "randint"),
+        ((-5, -10), {}, (-10, -5), "randint"),
+        ((5,), {"stop": 1}, (1, 5), "randint"),
+        ((), {"start": 5, "stop": 10}, (5, 10), "randint"),
+        ((10, 5.0), {}, (5.0, 10), "uniform"),
+    ],
+)
+def test_random_normalizes_bounds(args, kwargs, expected, primitive):
+    with mock.patch("fnc.utilities." + primitive, side_effect=lambda low, high: (low, high)):
+        assert fnc.random(*args, **kwargs) == expected
 
 
 @parametrize(
@@ -430,6 +486,44 @@ def test_retry_on_exception(mocksleep):
         func()
 
     assert error_counts == {key: True for key in range(1, attempts + 1)}
+
+
+def test_retry_on_exception_preserves_exception(mocksleep):
+    failure = ValueError("original failure")
+    caught = []
+
+    def on_exception(exc):
+        caught.append((exc, exc.retry["attempt"]))
+
+    @fnc.retry(attempts=2, delay=0, on_exception=on_exception)
+    def func():
+        raise failure
+
+    with pytest.raises(ValueError) as result:
+        func()
+
+    assert result.value is failure
+    assert caught == [(failure, 1), (failure, 2)]
+
+
+def test_retry_on_exception_propagates_callback_type_error(mocksleep):
+    failure = ValueError("original failure")
+    callback_failure = TypeError("callback failure")
+    caught = []
+
+    def on_exception(exc):
+        caught.append(exc)
+        raise callback_failure
+
+    @fnc.retry(attempts=2, delay=0, on_exception=on_exception)
+    def func():
+        raise failure
+
+    with pytest.raises(TypeError) as result:
+        func()
+
+    assert result.value is callback_failure
+    assert caught == [failure]
 
 
 @parametrize(
