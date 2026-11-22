@@ -142,7 +142,7 @@ def test_duplicates(case):
         ),
         dict(
             args=(
-                lambda x: round(x),
+                round,
                 [1.5, 2.3],
                 [3.7, 2.5],
                 [1.1, 5.8],
@@ -499,7 +499,7 @@ def test_intersection(case):
             expected=[{"a": 1}, {"a": 2}],
         ),
         dict(
-            args=(lambda x: round(x), [1.5, 1.7, 2.1, 2.8], [1, 1, 2, 2]),
+            args=(round, [1.5, 1.7, 2.1, 2.8], [1, 1, 2, 2]),
             expected=[1.5],
         ),
     ],
@@ -778,6 +778,30 @@ def test_unzip(case):
 @parametrize("case", [dict(args=([0, 1], [1, 2, 1, 0, 3, 1, 4]), expected=[2, 3, 4])])
 def test_without(case):
     assert list(fnc.without(*case["args"])) == case["expected"]
+
+
+@parametrize(
+    "values, seq, expected",
+    [
+        (iter([2, 4]), [1, 2, 3, 2, 4, 4], [1, 3]),
+        ((value for value in [[2], [4]]), [[1], [2], [3], [2], [4]], [[1], [3]]),
+        (iter(()), [1, 2], [1, 2]),
+    ],
+)
+def test_without_with_iterator_values(values, seq, expected):
+    assert list(fnc.without(values, seq)) == expected
+
+
+def test_without_preserves_string_membership():
+    assert list(fnc.without("abcd", ["ab", "ef"])) == ["ef"]
+
+
+def test_without_preserves_mutable_exclusions():
+    excluded = [2]
+    result = fnc.without(excluded, [1, 2, 3])
+    assert next(result) == 1
+    excluded.append(3)
+    assert list(result) == []
 
 
 @parametrize(

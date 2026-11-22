@@ -32,12 +32,8 @@ The following tools are used by this project:
 =============  ==========================  ==================
 Tool           Description                 Configuration
 =============  ==========================  ==================
-black_         Code formatter              ``pyproject.toml``
-isort_         Import statement formatter  ``setup.cfg``
-docformatter_  Docstring formatter         ``setup.cfg``
-flake8_        Code linter                 ``setup.cfg``
-pylint_        Code linter                 ``pylintrc``
-pytest_        Test framework              ``setup.cfg``
+ruff_          Code formatter and linter   ``pyproject.toml``
+pytest_        Test framework              ``pyproject.toml``
 tox_           Test environment manager    ``tox.ini``
 invoke_        CLI task execution library  ``tasks.py``
 =============  ==========================  ==================
@@ -61,9 +57,8 @@ This is the same as running each autoformatter individually:
 
 ::
 
-    inv black
-    inv isort
-    inv docformatter
+    inv ruff-format
+    inv ruff-fix
 
 
 Lint
@@ -79,8 +74,8 @@ This is the same as running each linter individually:
 
 ::
 
-    inv flake8
-    inv pylint
+    inv ruff-format-check
+    inv ruff-check
 
 
 Test
@@ -90,14 +85,14 @@ To run all unit tests:
 
 ::
 
-    inv unit
+    inv test
 
 
-To run unit tests and builds:
+To build the package and documentation, then run linters and unit tests:
 
 ::
 
-    inv test
+    inv ci
 
 
 Test on All Supported Python Versions
@@ -143,7 +138,7 @@ To serve docs over HTTP:
 
 ::
 
-    inv docs -s|--server [-b|--bind 127.0.0.1] [-p|--port 8000]
+    inv docs -s|--serve [-b|--bind 127.0.0.1] [-p|--port 8000]
 
     inv docs -s
     inv docs -s -p 8080
@@ -184,11 +179,7 @@ This project uses `Github Actions <https://docs.github.com/en/free-pro-team@late
 .. _pyenv-virtualenv: https://github.com/pyenv/pyenv-virtualenv
 .. _pew: https://github.com/berdario/pew
 .. _python-venv: https://docs.python.org/3/library/venv.html
-.. _black: https://black.readthedocs.io
-.. _isort: https://pycqa.github.io/isort/
-.. _docformatter: https://github.com/myint/docformatter
-.. _flake8: https://flake8.pycqa.org
-.. _pylint: https://www.pylint.org/
+.. _ruff: https://docs.astral.sh/ruff/
 .. _pytest: https://docs.pytest.org
 .. _tox: https://tox.readthedocs.io
 .. _invoke: http://docs.pyinvoke.org
