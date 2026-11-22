@@ -40,9 +40,12 @@ class Container(object):
 
     def __contains__(self, value):
         try:
-            return value in self.hashable
+            if value in self.hashable:
+                return True
         except TypeError:
-            return value in self.unhashable
+            if any(item == value for item in self.hashable):
+                return True
+        return value in self.unhashable
 
     def __len__(self):  # pragma: no cover
         return len(self.hashable) + len(self.unhashable)

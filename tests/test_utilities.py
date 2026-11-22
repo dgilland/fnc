@@ -327,6 +327,33 @@ def test_random(case):
 
 
 @parametrize(
+    "args, kwargs, expected, primitive",
+    [
+        ((10,), {}, (0, 10), "randint"),
+        ((0,), {}, (0, 0), "randint"),
+        ((-10,), {}, (-10, 0), "randint"),
+        ((2.5,), {}, (0, 2.5), "uniform"),
+        ((-2.5,), {}, (-2.5, 0), "uniform"),
+        ((10,), {"floating": True}, (0, 10), "uniform"),
+        ((), {"start": 10}, (0, 10), "randint"),
+        ((), {"stop": 10}, (0, 10), "randint"),
+        ((), {"stop": 0}, (0, 0), "randint"),
+        ((), {}, (0, 1), "randint"),
+        ((), {"floating": True}, (0, 1), "uniform"),
+        ((5, 10), {}, (5, 10), "randint"),
+        ((10, 5), {}, (5, 10), "randint"),
+        ((-5, -10), {}, (-10, -5), "randint"),
+        ((5,), {"stop": 1}, (1, 5), "randint"),
+        ((), {"start": 5, "stop": 10}, (5, 10), "randint"),
+        ((10, 5.0), {}, (5.0, 10), "uniform"),
+    ],
+)
+def test_random_normalizes_bounds(args, kwargs, expected, primitive):
+    with mock.patch("fnc.utilities." + primitive, side_effect=lambda low, high: (low, high)):
+        assert fnc.random(*args, **kwargs) == expected
+
+
+@parametrize(
     "case",
     [
         dict(args={"attempts": 3}, expected={"count": 0}),

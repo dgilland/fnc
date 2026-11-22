@@ -7,7 +7,7 @@ A mapping includes dictionaries, lists, strings, ``collections.abc.Mapping`` and
 For functions that use :func:`get`, non-mapping object values can be selected from class attributes.
 """
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 
 import fnc
 
@@ -19,11 +19,11 @@ def at(paths, obj):
     Creates a ``tuple`` of elements from `obj` at the given `paths`.
 
     Examples:
-        >>> at(['a', 'c'], {'a': 1, 'b': 2, 'c': 3, 'd': 4})
+        >>> at(["a", "c"], {"a": 1, "b": 2, "c": 3, "d": 4})
         (1, 3)
-        >>> at(['a', ['c', 'd', 'e']], {'a': 1, 'b': 2, 'c': {'d': {'e': 3}}})
+        >>> at(["a", ["c", "d", "e"]], {"a": 1, "b": 2, "c": {"d": {"e": 3}}})
         (1, 3)
-        >>> at(['a', 'c.d.e[0]'], {'a': 1, 'b': 2, 'c': {'d': {'e': [3]}}})
+        >>> at(["a", "c.d.e[0]"], {"a": 1, "b": 2, "c": {"d": {"e": [3]}}})
         (1, 3)
         >>> at([0, 2], [1, 2, 3, 4])
         (1, 3)
@@ -44,8 +44,8 @@ def defaults(*objs):
     set once and not overridden by subsequent dictionaries.
 
     Examples:
-        >>> obj = defaults({'a': 1}, {'b': 2}, {'c': 3, 'b': 5}, {'a': 4, 'c': 2})
-        >>> obj == {'a': 1, 'b': 2, 'c': 3}
+        >>> obj = defaults({"a": 1}, {"b": 2}, {"c": 3, "b": 5}, {"a": 4, "c": 2})
+        >>> obj == {"a": 1, "b": 2, "c": 3}
         True
 
     Args:
@@ -62,17 +62,17 @@ def get(path, obj, *, default=None):
     Get the `path` value at any depth of an object. If path doesn't exist, `default` is returned.
 
     Examples:
-        >>> get('a.b.c', {}) is None
+        >>> get("a.b.c", {}) is None
         True
-        >>> get('a.b.c[1]', {'a': {'b': {'c': [1, 2, 3, 4]}}})
+        >>> get("a.b.c[1]", {"a": {"b": {"c": [1, 2, 3, 4]}}})
         2
-        >>> get('a.b.c.1', {'a': {'b': {'c': [1, 2, 3, 4]}}})
+        >>> get("a.b.c.1", {"a": {"b": {"c": [1, 2, 3, 4]}}})
         2
-        >>> get('a.b.1.c[1]', {'a': {'b': [0, {'c': [1, 2]}]}})
+        >>> get("a.b.1.c[1]", {"a": {"b": [0, {"c": [1, 2]}]}})
         2
-        >>> get(['a', 'b', 1, 'c', 1], {'a': {'b': [0, {'c': [1, 2]}]}})
+        >>> get(["a", "b", 1, "c", 1], {"a": {"b": [0, {"c": [1, 2]}]}})
         2
-        >>> get('a.b.1.c.2', {'a': {'b': [0, {'c': [1, 2]}]}}, default=False)
+        >>> get("a.b.1.c.2", {"a": {"b": [0, {"c": [1, 2]}]}}, default=False)
         False
 
     Args:
@@ -151,6 +151,8 @@ def _get_obj(key, obj, *, default=UNSET):
     value = _get_item(key, obj, default=UNSET)
     if value is UNSET:
         value = default
+        if not isinstance(key, str):
+            return value
         try:
             value = getattr(obj, key)
         except AttributeError:
@@ -165,13 +167,13 @@ def has(path, obj):
     Examples:
         >>> has(1, [1, 2, 3])
         True
-        >>> has('b', {'a': 1, 'b': 2})
+        >>> has("b", {"a": 1, "b": 2})
         True
-        >>> has('c', {'a': 1, 'b': 2})
+        >>> has("c", {"a": 1, "b": 2})
         False
-        >>> has('a.b[1].c[1]', {'a': {'b': [0, {'c': [1, 2]}]}})
+        >>> has("a.b[1].c[1]", {"a": {"b": [0, {"c": [1, 2]}]}})
         True
-        >>> has('a.b.1.c.2', {'a': {'b': [0, {'c': [1, 2]}]}})
+        >>> has("a.b.1.c.2", {"a": {"b": [0, {"c": [1, 2]}]}})
         False
 
     Args:
@@ -197,8 +199,8 @@ def invert(obj):
         It's assumed that `obj` values are hashable as ``dict`` keys.
 
     Examples:
-        >>> result = invert({'a': 1, 'b': 2, 'c': 3})
-        >>> result == {1: 'a', 2: 'b', 3: 'c'}
+        >>> result = invert({"a": 1, "b": 2, "c": 3})
+        >>> result == {1: "a", 2: "b", 3: "c"}
         True
 
     Args:
@@ -215,8 +217,8 @@ def mapkeys(iteratee, obj):
     Return a ``dict`` with keys from `obj` mapped with `iteratee` while containing the same values.
 
     Examples:
-        >>> result = mapkeys(lambda k: k * 2, {'a': 1, 'b': 2, 'c': 3})
-        >>> result == {'aa': 1, 'bb': 2, 'cc': 3}
+        >>> result = mapkeys(lambda k: k * 2, {"a": 1, "b": 2, "c": 3})
+        >>> result == {"aa": 1, "bb": 2, "cc": 3}
         True
 
     Args:
@@ -235,11 +237,11 @@ def mapvalues(iteratee, obj):
     Return a ``dict`` with values from `obj` mapped with `iteratee` while containing the same keys.
 
     Examples:
-        >>> result = mapvalues(lambda v: v * 2, {'a': 1, 'b': 2, 'c': 3})
-        >>> result == {'a': 2, 'b': 4, 'c': 6}
+        >>> result = mapvalues(lambda v: v * 2, {"a": 1, "b": 2, "c": 3})
+        >>> result == {"a": 2, "b": 4, "c": 6}
         True
-        >>> result = mapvalues({'d': 4}, {'a': 1, 'b': {'d': 4}, 'c': 3})
-        >>> result == {'a': False, 'b': True, 'c': False}
+        >>> result = mapvalues({"d": 4}, {"a": 1, "b": {"d": 4}, "c": 3})
+        >>> result == {"a": False, "b": True, "c": False}
         True
 
     Args:
@@ -259,8 +261,8 @@ def merge(*objs):
     dictionary extends the previous results.
 
     Examples:
-        >>> item = merge({'a': 0}, {'b': 1}, {'b': 2, 'c': 3}, {'a': 1})
-        >>> item == {'a': 1, 'b': 2, 'c': 3}
+        >>> item = merge({"a": 0}, {"b": 1}, {"b": 2, "c": 3}, {"a": 1})
+        >>> item == {"a": 1, "b": 2, "c": 3}
         True
 
     Args:
@@ -281,9 +283,9 @@ def omit(keys, obj):
     `obj` that are not omitted.
 
     Examples:
-        >>> omit(['a', 'c'], {'a': 1, 'b': 2, 'c': 3 }) == {'b': 2}
+        >>> omit(["a", "c"], {"a": 1, "b": 2, "c": 3}) == {"b": 2}
         True
-        >>> omit([0, 3], ['a', 'b', 'c', 'd']) == {1: 'b', 2: 'c'}
+        >>> omit([0, 3], ["a", "b", "c", "d"]) == {1: "b", 2: "c"}
         True
 
     Args:
@@ -293,6 +295,9 @@ def omit(keys, obj):
     Returns:
         dict: Dictionary with `keys` omitted.
     """
+    if isinstance(keys, Iterator):
+        keys = tuple(keys)
+
     return {key: value for key, value in iterate(obj) if key not in keys}
 
 
@@ -301,9 +306,9 @@ def pick(keys, obj):
     Create a ``dict`` composed of the picked `keys` from `obj`.
 
     Examples:
-        >>> pick(['a', 'b'], {'a': 1, 'b': 2, 'c': 3}) == {'a': 1, 'b': 2}
+        >>> pick(["a", "b"], {"a": 1, "b": 2, "c": 3}) == {"a": 1, "b": 2}
         True
-        >>> pick(['a', 'b'], {'b': 2}) == {'b': 2}
+        >>> pick(["a", "b"], {"b": 2}) == {"b": 2}
         True
 
     Args:
