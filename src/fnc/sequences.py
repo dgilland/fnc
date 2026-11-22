@@ -954,7 +954,7 @@ def xor(seq, *seqs):
         Elements from the symmetric difference.
     """
     if not seqs:
-        yield from seq
+        yield from union(seq)
         return
 
     head, *rest = seqs

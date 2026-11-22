@@ -939,3 +939,24 @@ def test_without_preserves_mutable_exclusions():
 )
 def test_xor(case):
     assert list(fnc.xor(*case["args"])) == case["expected"]
+
+
+@parametrize("make_seq", [list, iter, lambda items: (item for item in items)])
+@parametrize(
+    "seq, expected",
+    [
+        ([], []),
+        ([1], [1]),
+        ([2, 1, 2, 3, 1], [2, 1, 3]),
+        ([[1], [1], [2], [1]], [[1], [2]]),
+        ([{"a": 1}, {"a": 1}, {"a": 2}], [{"a": 1}, {"a": 2}]),
+    ],
+)
+def test_xor_single_input_preserves_only_first_occurrences(make_seq, seq, expected):
+    assert list(fnc.xor(make_seq(seq))) == expected
+    assert list(fnc.xor(make_seq(seq), [])) == expected
+
+
+def test_xor_multiple_inputs_ignore_duplicates_within_each_input():
+    assert list(fnc.xor([1, 1, 2], [2, 2, 3])) == [1, 3]
+    assert list(fnc.xor([1, 1], [1, 1], [1, 1])) == [1]
