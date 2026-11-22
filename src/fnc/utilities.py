@@ -1,6 +1,6 @@
 """General utility functions."""
 
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterator
 from functools import partial, wraps
 from random import randint, uniform
 import re
@@ -614,9 +614,11 @@ def retry(  # noqa: C901
         ...     failed_attempts.append(exc.retry["attempt"])
         >>> @retry(attempts=2, delay=0, on_exception=on_exception)
         ... def fail():
-        ...     raise ValueError('original failure')
-        >>> try: fail()
-        ... except ValueError: print(failed_attempts)
+        ...     raise ValueError("original failure")
+        >>> try:
+        ...     fail()
+        ... except ValueError:
+        ...     print(failed_attempts)
         [1, 2]
     """
     if isinstance(exceptions, Exception):  # pragma: no cover
