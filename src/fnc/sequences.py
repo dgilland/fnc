@@ -43,10 +43,10 @@ def chunk(size, seq):
     group = []
 
     for item in seq:
+        group.append(item)
         if len(group) >= size:
             yield group
             group = []
-        group.append(item)
 
     if group:
         yield group

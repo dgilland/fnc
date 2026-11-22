@@ -24,6 +24,42 @@ def test_chunk(case):
     assert list(fnc.chunk(*case["args"])) == case["expected"]
 
 
+def test_chunk_does_not_consume_the_next_batch_before_yielding():
+    seen = []
+
+    def source():
+        for value in [1, 2, 3, 4, 5]:
+            seen.append(value)
+            yield value
+
+    result = fnc.chunk(2, source())
+    assert seen == []
+    assert next(result) == [1, 2]
+    assert seen == [1, 2]
+    assert next(result) == [3, 4]
+    assert seen == [1, 2, 3, 4]
+    assert next(result) == [5]
+    assert seen == [1, 2, 3, 4, 5]
+    with pytest.raises(StopIteration):
+        next(result)
+
+
+@parametrize("size", [1, 2, 3])
+def test_chunk_yields_complete_batch_before_source_error(size):
+    def source():
+        yield from range(size)
+        raise RuntimeError("next batch requested")
+
+    result = fnc.chunk(size, source())
+    assert next(result) == list(range(size))
+    with pytest.raises(RuntimeError, match="next batch requested"):
+        next(result)
+
+
+def test_chunk_empty_source():
+    assert list(fnc.chunk(2, iter(()))) == []
+
+
 @parametrize(
     "case",
     [
