@@ -498,16 +498,16 @@ def pickgetter(keys):
     return partial(fnc.pick, keys)
 
 
-def random(start=0, stop=1, floating=False):
+def random(start=Sentinel, stop=Sentinel, floating=False):
     """
     Produces a random number between `start` and `stop` (inclusive). If only one argument is
     provided a number between 0 and the given number will be returned. If floating is truthy or
     either `start` or `stop` are floats a floating-point number will be returned instead of an
-    integer.
+    integer. With no arguments, the bounds default to 0 and 1.
 
     Args:
-        start (int): Minimum value.
-        stop (int): Maximum value.
+        start (int|float, optional): First bound, or the only bound when `stop` is omitted.
+        stop (int|float, optional): Second bound.
         floating (bool, optional): Whether to force random value to ``float``. Default
             is ``False``.
 
@@ -522,6 +522,13 @@ def random(start=0, stop=1, floating=False):
         >>> isinstance(random(floating=True), float)
         True
     """
+    if start is Sentinel:
+        start = 0
+        if stop is Sentinel:
+            stop = 1
+    elif stop is Sentinel:
+        start, stop = 0, start
+
     floating = isinstance(start, float) or isinstance(stop, float) or floating is True
 
     if stop < start:
