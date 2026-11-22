@@ -459,6 +459,44 @@ def test_retry_on_exception(mocksleep):
     assert error_counts == {key: True for key in range(1, attempts + 1)}
 
 
+def test_retry_on_exception_preserves_exception(mocksleep):
+    failure = ValueError("original failure")
+    caught = []
+
+    def on_exception(exc):
+        caught.append((exc, exc.retry["attempt"]))
+
+    @fnc.retry(attempts=2, delay=0, on_exception=on_exception)
+    def func():
+        raise failure
+
+    with pytest.raises(ValueError) as result:
+        func()
+
+    assert result.value is failure
+    assert caught == [(failure, 1), (failure, 2)]
+
+
+def test_retry_on_exception_propagates_callback_type_error(mocksleep):
+    failure = ValueError("original failure")
+    callback_failure = TypeError("callback failure")
+    caught = []
+
+    def on_exception(exc):
+        caught.append(exc)
+        raise callback_failure
+
+    @fnc.retry(attempts=2, delay=0, on_exception=on_exception)
+    def func():
+        raise failure
+
+    with pytest.raises(TypeError) as result:
+        func()
+
+    assert result.value is callback_failure
+    assert caught == [failure]
+
+
 @parametrize(
     "case",
     [
