@@ -728,7 +728,7 @@ def mapcat(iteratee, *seqs):
     Yields:
         Elements resulting from concat + map operations.
     """
-    return concat(*map(iteratee, *seqs))
+    return itertools.chain.from_iterable(map(iteratee, *seqs))
 
 
 def mapflat(iteratee, *seqs):

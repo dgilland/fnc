@@ -1,3 +1,4 @@
+import itertools
 import math
 
 import pytest
@@ -619,6 +620,50 @@ def test_map(case):
     ],
 )
 def test_mapcat(case):
+    assert list(fnc.mapcat(*case["args"])) == case["expected"]
+
+
+def test_mapcat_consumes_only_the_current_mapped_iterable():
+    seen = []
+
+    def source():
+        for value in range(3):
+            seen.append(value)
+            yield value
+
+    result = fnc.mapcat(lambda value: iter([value, value]), source())
+    assert seen == []
+    assert next(result) == 0
+    assert seen == [0]
+    assert next(result) == 0
+    assert seen == [0]
+    assert next(result) == 1
+    assert seen == [0, 1]
+    assert list(result) == [1, 2, 2]
+    assert seen == [0, 1, 2]
+
+
+def test_mapcat_can_yield_a_prefix_without_exhausting_source():
+    def source():
+        for value in itertools.count():
+            if value == 3:
+                raise AssertionError("source read beyond the requested prefix")
+            yield value
+
+    result = fnc.mapcat(lambda value: [value], source())
+    assert list(itertools.islice(result, 3)) == [0, 1, 2]
+
+
+@parametrize(
+    "case",
+    [
+        dict(args=(None, []), expected=[]),
+        dict(args=(None, [[[1]], [[2]]]), expected=[[1], [2]]),
+        dict(args=("values", [{"values": [1, 2]}, {"values": []}]), expected=[1, 2]),
+        dict(args=(lambda x, y: (x, y), iter([1, 2]), iter([3])), expected=[1, 3]),
+    ],
+)
+def test_mapcat_preserves_mapping_and_concatenation(case):
     assert list(fnc.mapcat(*case["args"])) == case["expected"]
 
 
