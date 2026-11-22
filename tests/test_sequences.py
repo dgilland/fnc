@@ -142,7 +142,7 @@ def test_duplicates(case):
         ),
         dict(
             args=(
-                lambda x: round(x),
+                round,
                 [1.5, 2.3],
                 [3.7, 2.5],
                 [1.1, 5.8],
@@ -499,7 +499,7 @@ def test_intersection(case):
             expected=[{"a": 1}, {"a": 2}],
         ),
         dict(
-            args=(lambda x: round(x), [1.5, 1.7, 2.1, 2.8], [1, 1, 2, 2]),
+            args=(round, [1.5, 1.7, 2.1, 2.8], [1, 1, 2, 2]),
             expected=[1.5],
         ),
     ],

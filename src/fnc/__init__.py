@@ -68,14 +68,14 @@ For example:
 
 ::
 
-    x = [*fnc.filter({'a': 1, 'b': 2}, [{'a': 1}, {'a': 1, 'b': 2, 'c': 3}])]
-    x == [{'a': 1, 'b': 2, 'c': 3}]
+    x = [*fnc.filter({"a": 1, "b": 2}, [{"a": 1}, {"a": 1, "b": 2, "c": 3}])]
+    x == [{"a": 1, "b": 2, "c": 3}]
 
 which is the same as:
 
 ::
 
-    x = list(fnc.filter(fnc.conformance({'a': 1, 'b': 2}), ...))
+    x = list(fnc.filter(fnc.conformance({"a": 1, "b": 2}), ...))
 
 Note:
     When values in the dictionary-iteratee are callables, they will be treated as predicate
@@ -90,18 +90,19 @@ For example:
 
 ::
 
-    x = [*fnc.map({'a', 'b'}, [{'a': 1, 'b': 2, 'c': 3}, {'b': 4, 'd': 5}, {'a': 1}])]
-    x == [{'a': 1, 'b': 2}, {'a': None, 'b': 4}, {'a': 1, 'b': None}]
+    x = [*fnc.map({"a", "b"}, [{"a": 1, "b": 2, "c": 3}, {"b": 4, "d": 5}, {"a": 1}])]
+    x == [{"a": 1, "b": 2}, {"a": None, "b": 4}, {"a": 1, "b": None}]
 
 which is the same as:
 
 ::
 
-    x = [*fnc.map(fnc.pickgetter(['a', 'b']), ...)]
+    x = [*fnc.map(fnc.pickgetter(["a", "b"]), ...)]
 
     # or
     from functools import partial
-    x = [*fnc.map(partial(fnc.pick, ['a', 'b']), ...)]
+
+    x = [*fnc.map(partial(fnc.pick, ["a", "b"]), ...)]
 
 Tuple
 +++++
@@ -112,22 +113,17 @@ For example:
 
 ::
 
-    x = [
-        *fnc.map(
-            ('a', 'b'),
-            [{'a': 1, 'b': 2, 'c': 3}, {'b': 4, 'd': 5}, {'a': 1}]
-        )
-    ]
+    x = [*fnc.map(("a", "b"), [{"a": 1, "b": 2, "c": 3}, {"b": 4, "d": 5}, {"a": 1}])]
     x == [(1, 2), (None, 4), (1, None)]
 
 which is the same as:
 
 ::
 
-    x = [*fnc.map(fnc.atgetter(['a', 'b']), ...)]
+    x = [*fnc.map(fnc.atgetter(["a", "b"]), ...)]
 
     # or
-    x = [*fnc.map(partial(fnc.at, ['a', 'b']), ...)]
+    x = [*fnc.map(partial(fnc.at, ["a", "b"]), ...)]
 
 List
 ++++
@@ -139,10 +135,7 @@ For example:
 ::
 
     x = [
-        *fnc.map(
-            ['a', 'aa', 0, 'aaa'],
-            [{'a': {'aa': [{'aaa': 1}]}}, {'a': {'aa': [{'aaa': 2}]}}]
-        )
+        *fnc.map(["a", "aa", 0, "aaa"], [{"a": {"aa": [{"aaa": 1}]}}, {"a": {"aa": [{"aaa": 2}]}}])
     ]
     x == [1, 2]
 
@@ -150,10 +143,10 @@ which is the same as:
 
 ::
 
-    x = [*fnc.map(fnc.pathgetter(['a', 'aa', 0, 'aaa']), ...)]
+    x = [*fnc.map(fnc.pathgetter(["a", "aa", 0, "aaa"]), ...)]
 
     # or
-    x = [*fnc.map(partial(fnc.get, ['a', 'aa', 0, 'aaa']), ...)]
+    x = [*fnc.map(partial(fnc.get, ["a", "aa", 0, "aaa"]), ...)]
 
 String
 ++++++
@@ -165,22 +158,17 @@ For example:
 
 ::
 
-    x = [
-        *fnc.map(
-            'a.aa[0].aaa',
-            [{'a': {'aa': [{'aaa': 1}]}}, {'a': {'aa': [{'aaa': 2}]}}]
-        )
-    ]
+    x = [*fnc.map("a.aa[0].aaa", [{"a": {"aa": [{"aaa": 1}]}}, {"a": {"aa": [{"aaa": 2}]}}])]
     x == [1, 2]
 
 which is the same as:
 
 ::
 
-    x = [*fnc.map(fnc.pathgetter('a.aa[0].aaa'), ...)]
+    x = [*fnc.map(fnc.pathgetter("a.aa[0].aaa"), ...)]
 
     # or
-    x = [*fnc.map(partial(fnc.get, 'a.aa[0].aaa'), ...)]
+    x = [*fnc.map(partial(fnc.get, "a.aa[0].aaa"), ...)]
 
 Other Values
 ++++++++++++
@@ -205,8 +193,7 @@ with the same arguments to ``functools.partial``.
 ::
 
     count_by_age_over21 = fnc.compose(
-        (fnc.filter, {'age': lambda age: age >= 21}),
-        (fnc.countby, 'age')
+        (fnc.filter, {"age": lambda age: age >= 21}), (fnc.countby, "age")
     )
 
     # is equivalent to...
@@ -216,14 +203,7 @@ with the same arguments to ``functools.partial``.
     # )
 
     x = count_by_age_over21(
-        [
-            {'age': 20},
-            {'age': 21},
-            {'age': 30},
-            {'age': 22},
-            {'age': 21},
-            {'age': 22}
-        ]
+        [{"age": 20}, {"age": 21}, {"age": 30}, {"age": 22}, {"age": 21}, {"age": 22}]
     )
     x == {21: 2, 30: 1, 22: 2}
 
