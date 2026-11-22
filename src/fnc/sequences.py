@@ -8,6 +8,7 @@ identify them as generators. Otherwise, functions that return concrete values wi
 """
 
 from collections import Counter, deque
+from collections.abc import Iterator
 from functools import partial
 import itertools
 from operator import not_
@@ -56,7 +57,7 @@ def compact(seq):
     Exclude elements from `seq` that are falsey.
 
     Examples:
-        >>> list(compact(['', 1, 0, True, False, None]))
+        >>> list(compact(["", 1, 0, True, False, None]))
         [1, True]
 
     Args:
@@ -96,11 +97,11 @@ def countby(iteratee, seq):
         >>> result = countby(None, [1, 2, 1, 2, 3, 4])
         >>> result == {1: 2, 2: 2, 3: 1, 4: 1}
         True
-        >>> result = countby(lambda x: x.lower(), ['a', 'A', 'B', 'b'])
-        >>> result == {'a': 2, 'b': 2}
+        >>> result = countby(lambda x: x.lower(), ["a", "A", "B", "b"])
+        >>> result == {"a": 2, "b": 2}
         True
-        >>> result = countby('a', [{'a': 'x'}, {'a': 'x'}, {'a': 'y'}])
-        >>> result == {'x': 2, 'y': 1}
+        >>> result = countby("a", [{"a": "x"}, {"a": "x"}, {"a": "y"}])
+        >>> result == {"x": 2, "y": 1}
         True
 
     Args:
@@ -149,7 +150,7 @@ def differenceby(iteratee, seq, *seqs):
         and unhashable values and preserves the ordering of the original iterables.
 
     Examples:
-        >>> list(differenceby('a', [{'a': 1}, {'a': 2}, {'a': 3}], [{'a': 1}], [{'a': 2}]))
+        >>> list(differenceby("a", [{"a": 1}, {"a": 2}, {"a": 3}], [{"a": 1}], [{"a": 2}]))
         [{'a': 3}]
         >>> list(differenceby(lambda x: x % 4, [1, 4, 2, 3, 5, 0], [1], [2, 0]))
         [3]
@@ -220,7 +221,7 @@ def duplicatesby(iteratee, seq, *seqs):
     sequences. The modified values are then used for comparison.
 
     Examples:
-        >>> list(duplicatesby('a', [{'a':1}, {'a':3}, {'a':2}, {'a':3}, {'a':1}]))
+        >>> list(duplicatesby("a", [{"a": 1}, {"a": 3}, {"a": 2}, {"a": 3}, {"a": 1}]))
         [{'a': 3}, {'a': 1}]
 
     Args:
@@ -261,8 +262,8 @@ def filter(iteratee, seq):
         a fnc-style predicate.
 
     Examples:
-        >>> result = filter({'a': 1}, [{'a': 1}, {'b': 2}, {'a': 1, 'b': 3}])
-        >>> list(result) == [{'a': 1}, {'a': 1, 'b': 3}]
+        >>> result = filter({"a": 1}, [{"a": 1}, {"b": 2}, {"a": 1, "b": 3}])
+        >>> list(result) == [{"a": 1}, {"a": 1, "b": 3}]
         True
         >>> list(filter(lambda x: x >= 3, [1, 2, 3, 4]))
         [3, 4]
@@ -287,10 +288,10 @@ def find(iteratee, seq):
         3
         >>> find(lambda x: x >= 5, [1, 2, 3, 4]) is None
         True
-        >>> find({'a': 1}, [{'a': 1}, {'b': 2}, {'a': 1, 'b': 2}])
+        >>> find({"a": 1}, [{"a": 1}, {"b": 2}, {"a": 1, "b": 2}])
         {'a': 1}
-        >>> result = find({'a': 1}, [{'b': 2}, {'a': 1, 'b': 2}, {'a': 1}])
-        >>> result == {'a': 1, 'b': 2}
+        >>> result = find({"a": 1}, [{"b": 2}, {"a": 1, "b": 2}, {"a": 1}])
+        >>> result == {"a": 1, "b": 2}
         True
 
     Args:
@@ -335,8 +336,8 @@ def findlast(iteratee, seq):
         4
         >>> findlast(lambda x: x >= 5, [1, 2, 3, 4]) is None
         True
-        >>> result = findlast({'a': 1}, [{'a': 1}, {'b': 2}, {'a': 1, 'b': 2}])
-        >>> result == {'a': 1, 'b': 2}
+        >>> result = findlast({"a": 1}, [{"a": 1}, {"b": 2}, {"a": 1, "b": 2}])
+        >>> result == {"a": 1, "b": 2}
         True
 
     Args:
@@ -426,31 +427,29 @@ def groupall(iteratees, seq):
 
     Examples:
         >>> result = groupall(
-        ...     ['shape', 'qty'],
+        ...     ["shape", "qty"],
         ...     [
-        ...         {'shape': 'square', 'color': 'red', 'qty': 5},
-        ...         {'shape': 'square', 'color': 'blue', 'qty': 10},
-        ...         {'shape': 'square', 'color': 'orange', 'qty': 5},
-        ...         {'shape': 'circle', 'color': 'yellow', 'qty': 5},
-        ...         {'shape': 'circle', 'color': 'pink', 'qty': 10},
-        ...         {'shape': 'oval', 'color': 'purple', 'qty': 5}
-        ...     ]
+        ...         {"shape": "square", "color": "red", "qty": 5},
+        ...         {"shape": "square", "color": "blue", "qty": 10},
+        ...         {"shape": "square", "color": "orange", "qty": 5},
+        ...         {"shape": "circle", "color": "yellow", "qty": 5},
+        ...         {"shape": "circle", "color": "pink", "qty": 10},
+        ...         {"shape": "oval", "color": "purple", "qty": 5},
+        ...     ],
         ... )
         >>> expected = {
-        ...     'square': {
+        ...     "square": {
         ...         5: [
-        ...             {'shape': 'square', 'color': 'red', 'qty': 5},
-        ...             {'shape': 'square', 'color': 'orange', 'qty': 5}
+        ...             {"shape": "square", "color": "red", "qty": 5},
+        ...             {"shape": "square", "color": "orange", "qty": 5},
         ...         ],
-        ...         10: [{'shape': 'square', 'color': 'blue', 'qty': 10}]
+        ...         10: [{"shape": "square", "color": "blue", "qty": 10}],
         ...     },
-        ...     'circle': {
-        ...         5: [{'shape': 'circle', 'color': 'yellow', 'qty': 5}],
-        ...         10: [{'shape': 'circle', 'color': 'pink', 'qty': 10}]
+        ...     "circle": {
+        ...         5: [{"shape": "circle", "color": "yellow", "qty": 5}],
+        ...         10: [{"shape": "circle", "color": "pink", "qty": 10}],
         ...     },
-        ...     'oval': {
-        ...         5: [{'shape': 'oval', 'color': 'purple', 'qty': 5}]
-        ...     }
+        ...     "oval": {5: [{"shape": "oval", "color": "purple", "qty": 5}]},
         ... }
         >>> result == expected
         True
@@ -476,11 +475,11 @@ def groupby(iteratee, seq):
     through the `iteratee`.
 
     Examples:
-        >>> result = groupby('a', [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}])
-        >>> result == {1: [{'a': 1, 'b': 2}], 3: [{'a': 3, 'b': 4}]}
+        >>> result = groupby("a", [{"a": 1, "b": 2}, {"a": 3, "b": 4}])
+        >>> result == {1: [{"a": 1, "b": 2}], 3: [{"a": 3, "b": 4}]}
         True
-        >>> result = groupby({'a': 1}, [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}])
-        >>> result == {False: [{'a': 3, 'b': 4}], True: [{'a': 1, 'b': 2}]}
+        >>> result = groupby({"a": 1}, [{"a": 1, "b": 2}, {"a": 3, "b": 4}])
+        >>> result == {False: [{"a": 3, "b": 4}], True: [{"a": 1, "b": 2}]}
         True
 
     Args:
@@ -504,13 +503,13 @@ def intercalate(value, seq):
     Insert `value` between each element in `seq` and concatenate the results.
 
     Examples:
-        >>> list(intercalate('x', [1, [2], [3], 4]))
+        >>> list(intercalate("x", [1, [2], [3], 4]))
         [1, 'x', 2, 'x', 3, 'x', 4]
-        >>> list(intercalate(', ', ['Lorem', 'ipsum', 'dolor']))
+        >>> list(intercalate(", ", ["Lorem", "ipsum", "dolor"]))
         ['Lorem', ', ', 'ipsum', ', ', 'dolor']
-        >>> ''.join(intercalate(', ', ['Lorem', 'ipsum', 'dolor']))
+        >>> "".join(intercalate(", ", ["Lorem", "ipsum", "dolor"]))
         'Lorem, ipsum, dolor'
-        >>> list(intercalate([0,0,0], [[1,2,3],[4,5,6],[7,8,9]]))
+        >>> list(intercalate([0, 0, 0], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
         [1, 2, 3, 0, 0, 0, 4, 5, 6, 0, 0, 0, 7, 8, 9]
 
     Args:
@@ -585,12 +584,14 @@ def intersectionby(iteratee, seq, *seqs):
         and unhashable values and preserves the ordering of the original iterables.
 
     Examples:
-        >>> list(intersectionby(
-        ...     'a',
-        ...     [{'a': 1}, {'a': 2}, {'a': 3}],
-        ...     [{'a': 1}, {'a': 2}, {'a': 3}, {'a': 4}, {'a': 5}],
-        ...     [{'a': 2}, {'a': 3}]
-        ... ))
+        >>> list(
+        ...     intersectionby(
+        ...         "a",
+        ...         [{"a": 1}, {"a": 2}, {"a": 3}],
+        ...         [{"a": 1}, {"a": 2}, {"a": 3}, {"a": 4}, {"a": 5}],
+        ...         [{"a": 2}, {"a": 3}],
+        ...     )
+        ... )
         [{'a': 2}, {'a': 3}]
 
     Args:
@@ -636,7 +637,7 @@ def intersperse(value, seq):
     Insert a separating element between each element in `seq`.
 
     Examples:
-        >>> list(intersperse('x', [1, [2], [3], 4]))
+        >>> list(intersperse("x", [1, [2], [3], 4]))
         [1, 'x', [2], 'x', [3], 'x', 4]
 
     Args:
@@ -664,8 +665,8 @@ def keyby(iteratee, seq):
     through the `iteratee`.
 
     Examples:
-        >>> results = keyby('a', [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}])
-        >>> results == {1: {'a': 1, 'b': 2}, 3: {'a': 3, 'b': 4}}
+        >>> results = keyby("a", [{"a": 1, "b": 2}, {"a": 3, "b": 4}])
+        >>> results == {1: {"a": 1, "b": 2}, 3: {"a": 3, "b": 4}}
         True
 
     Args:
@@ -692,13 +693,13 @@ def map(iteratee, *seqs):
     Examples:
         >>> list(map(str, [1, 2, 3, 4]))
         ['1', '2', '3', '4']
-        >>> list(map('a', [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 5, 'b': 6}]))
+        >>> list(map("a", [{"a": 1, "b": 2}, {"a": 3, "b": 4}, {"a": 5, "b": 6}]))
         [1, 3, 5]
-        >>> list(map('0.1', [[[0, 1]], [[2, 3]], [[4, 5]]]))
+        >>> list(map("0.1", [[[0, 1]], [[2, 3]], [[4, 5]]]))
         [1, 3, 5]
-        >>> list(map('a.b', [{'a': {'b': 1}}, {'a': {'b': 2}}]))
+        >>> list(map("a.b", [{"a": {"b": 1}}, {"a": {"b": 2}}]))
         [1, 2]
-        >>> list(map('a.b[1]', [{'a': {'b': [0, 1]}}, {'a': {'b': [2, 3]}}]))
+        >>> list(map("a.b[1]", [{"a": {"b": [0, 1]}}, {"a": {"b": [2, 3]}}]))
         [1, 3]
 
     Args:
@@ -805,9 +806,9 @@ def reject(iteratee, seq):
     Examples:
         >>> list(reject(lambda x: x >= 3, [1, 2, 3, 4]))
         [1, 2]
-        >>> list(reject('a', [{'a': 0}, {'a': 1}, {'a': 2}]))
+        >>> list(reject("a", [{"a": 0}, {"a": 1}, {"a": 2}]))
         [{'a': 0}]
-        >>> list(reject({'a': 1}, [{'a': 0}, {'a': 1}, {'a': 2}]))
+        >>> list(reject({"a": 1}, [{"a": 0}, {"a": 1}, {"a": 2}]))
         [{'a': 0}, {'a': 2}]
 
     Args:
@@ -855,10 +856,7 @@ def unionby(iteratee, seq, *seqs):
         unhashable values and preserves the ordering of the original iterables.
 
     Examples:
-        >>> list(unionby(
-        ...     'a',
-        ...     [{'a': 1}, {'a': 2}, {'a': 3}, {'a': 1}, {'a': 2}, {'a': 3}]
-        ... ))
+        >>> list(unionby("a", [{"a": 1}, {"a": 2}, {"a": 3}, {"a": 1}, {"a": 2}, {"a": 3}]))
         [{'a': 1}, {'a': 2}, {'a': 3}]
 
     Args:
@@ -903,7 +901,7 @@ def unzip(seq):
     Yields:
         tuple: Each transposed group.
     """
-    return zip(*seq)
+    return zip(*seq, strict=False)
 
 
 def without(values, seq):
@@ -921,6 +919,9 @@ def without(values, seq):
     Yields:
         Elements not in `values`.
     """
+    if isinstance(values, Iterator):
+        values = tuple(values)
+
     for item in seq:
         if item not in values:
             yield item

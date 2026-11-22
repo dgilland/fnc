@@ -1,6 +1,5 @@
 """General utility functions."""
 
-from collections.abc import Iterable
 from functools import partial, wraps
 from random import randint, uniform
 import re
@@ -27,8 +26,10 @@ def after(method):
     Decorator that calls `method` after the decorated function is called.
 
     Examples:
-        >>> def a(): print('a')
-        >>> def b(): print('b')
+        >>> def a():
+        ...     print("a")
+        >>> def b():
+        ...     print("b")
         >>> after(a)(b)()
         b
         a
@@ -54,17 +55,17 @@ def aspath(value):
     Converts value to an object path list.
 
     Examples:
-        >>> aspath('a.b.c')
+        >>> aspath("a.b.c")
         ['a', 'b', 'c']
-        >>> aspath('a.0.0.b.c')
+        >>> aspath("a.0.0.b.c")
         ['a', '0', '0', 'b', 'c']
-        >>> aspath('a[0].b.c')
+        >>> aspath("a[0].b.c")
         ['a', '0', 'b', 'c']
-        >>> aspath('a[0][1][2].b.c')
+        >>> aspath("a[0][1][2].b.c")
         ['a', '0', '1', '2', 'b', 'c']
-        >>> aspath('[a][0][1][2][b][c]')
+        >>> aspath("[a][0][1][2][b][c]")
         ['a', '0', '1', '2', 'b', 'c']
-        >>> aspath('a.[]')
+        >>> aspath("a.[]")
         ['a', '']
         >>> aspath(0)
         [0]
@@ -102,8 +103,8 @@ def atgetter(paths):
     Creates a function that returns the values at paths of a given object.
 
     Examples:
-        >>> get_id_name = atgetter(['data.id', 'data.name'])
-        >>> get_id_name({'data': {'id': 1, 'name': 'foo'}})
+        >>> get_id_name = atgetter(["data.id", "data.name"])
+        >>> get_id_name({"data": {"id": 1, "name": "foo"}})
         (1, 'foo')
 
     Args:
@@ -120,8 +121,10 @@ def before(method):
     Decorator that calls `method` before the decorated function is called.
 
     Examples:
-        >>> def a(): print('a')
-        >>> def b(): print('b')
+        >>> def a():
+        ...     print("a")
+        >>> def b():
+        ...     print("b")
         >>> before(a)(b)()
         a
         b
@@ -160,14 +163,12 @@ def compose(*funcs):
     Examples:
         >>> mult_5 = lambda x: x * 5
         >>> div_10 = lambda x: x / 10.0
-        >>> pow_2 = lambda x: x ** 2
+        >>> pow_2 = lambda x: x**2
         >>> mult_div_pow = compose(sum, mult_5, div_10, pow_2)
         >>> mult_div_pow([1, 2, 3, 4])
         25.0
         >>> sum_positive_evens = compose(
-        ...     (filter, lambda x: x > 0),
-        ...     (filter, lambda x: x % 2 == 0),
-        ...     sum
+        ...     (filter, lambda x: x > 0), (filter, lambda x: x % 2 == 0), sum
         ... )
         >>> sum_positive_evens([-1, 1, 2, 3, -5, 0, 6])
         8
@@ -197,9 +198,9 @@ def conformance(source):
     dictionary using :func:`conforms`.
 
     Examples:
-        >>> conformance({'a': 1})({'b': 2, 'a': 1})
+        >>> conformance({"a": 1})({"b": 2, "a": 1})
         True
-        >>> conformance({'a': 1})({'b': 2, 'a': 2})
+        >>> conformance({"a": 1})({"b": 2, "a": 2})
         False
 
     Args:
@@ -222,13 +223,13 @@ def conforms(source, target):
     corresponding key-value in `target`.
 
     Examples:
-        >>> conforms({'b': 2}, {'a': 1, 'b': 2})
+        >>> conforms({"b": 2}, {"a": 1, "b": 2})
         True
-        >>> conforms({'b': 3}, {'a': 1, 'b': 2})
+        >>> conforms({"b": 3}, {"a": 1, "b": 2})
         False
-        >>> conforms({'b': 2, 'a': lambda a: a > 0}, {'a': 1, 'b': 2})
+        >>> conforms({"b": 2, "a": lambda a: a > 0}, {"a": 1, "b": 2})
         True
-        >>> conforms({'b': 2, 'a': lambda a: a > 0}, {'a': -1, 'b': 2})
+        >>> conforms({"b": 2, "a": lambda a: a > 0}, {"a": -1, "b": 2})
         False
 
     Args:
@@ -320,25 +321,25 @@ def iteratee(obj):
         3
         >>> iteratee(None)(1, 2, 3)
         1
-        >>> is_active = iteratee({'active': True})
-        >>> is_active({'active': True})
+        >>> is_active = iteratee({"active": True})
+        >>> is_active({"active": True})
         True
-        >>> is_active({'active': 0})
+        >>> is_active({"active": 0})
         False
-        >>> iteratee({'a': 5, 'b.c': 1})({'a': 5, 'b': {'c': 1}})
+        >>> iteratee({"a": 5, "b.c": 1})({"a": 5, "b": {"c": 1}})
         True
-        >>> iteratee({'a', 'b'})({'a': 1, 'b': 2, 'c': 3}) == {'a': 1, 'b': 2}
+        >>> iteratee({"a", "b"})({"a": 1, "b": 2, "c": 3}) == {"a": 1, "b": 2}
         True
-        >>> iteratee(('a', ['c', 'd', 'e']))({'a': 1, 'c': {'d': {'e': 3}}})
+        >>> iteratee(("a", ["c", "d", "e"]))({"a": 1, "c": {"d": {"e": 3}}})
         (1, 3)
-        >>> iteratee(['c', 'd', 'e'])({'a': 1, 'c': {'d': {'e': 3}}})
+        >>> iteratee(["c", "d", "e"])({"a": 1, "c": {"d": {"e": 3}}})
         3
-        >>> get_data = iteratee('data')
-        >>> get_data({'data': [1, 2, 3]})
+        >>> get_data = iteratee("data")
+        >>> get_data({"data": [1, 2, 3]})
         [1, 2, 3]
-        >>> iteratee(['a.b'])({'a.b': 5})
+        >>> iteratee(["a.b"])({"a.b": 5})
         5
-        >>> iteratee('a.b')({'a': {'b': 5}})
+        >>> iteratee("a.b")({"a": {"b": 5}})
         5
 
     Args:
@@ -369,7 +370,7 @@ def negate(func):
         >>> not_number = negate(lambda x: isinstance(x, (int, float)))
         >>> not_number(1)
         False
-        >>> not_number('1')
+        >>> not_number("1")
         True
 
     Args:
@@ -417,10 +418,7 @@ def overall(*funcs):
     provided arguments.
 
     Example:
-        >>> is_bool = overall(
-        ...     lambda v: isinstance(v, bool),
-        ...     lambda v: v is True or v is False
-        ... )
+        >>> is_bool = overall(lambda v: isinstance(v, bool), lambda v: v is True or v is False)
         >>> is_bool(False)
         True
         >>> is_bool(0)
@@ -441,10 +439,7 @@ def overany(*funcs):
     provided arguments.
 
     Example:
-        >>> is_bool_like = overany(
-        ...     lambda v: isinstance(v, bool),
-        ...     lambda v: v in [0, 1]
-        ... )
+        >>> is_bool_like = overany(lambda v: isinstance(v, bool), lambda v: v in [0, 1])
         >>> is_bool_like(False)
         True
         >>> is_bool_like(0)
@@ -464,16 +459,16 @@ def pathgetter(path, default=None):
     Creates a function that returns the value at path of a given object.
 
     Examples:
-        >>> get_data = pathgetter('data')
-        >>> get_data({'data': 1})
+        >>> get_data = pathgetter("data")
+        >>> get_data({"data": 1})
         1
         >>> get_data({}) is None
         True
         >>> get_first = pathgetter(0)
         >>> get_first([1, 2, 3])
         1
-        >>> get_nested = pathgetter('data.items')
-        >>> get_nested({'data': {'items': [1, 2]}})
+        >>> get_nested = pathgetter("data.items")
+        >>> get_nested({"data": {"items": [1, 2]}})
         [1, 2]
 
     Args:
@@ -490,8 +485,8 @@ def pickgetter(keys):
     Creates a function that returns the value at path of a given object.
 
     Examples:
-        >>> pick_ab = pickgetter(['a', 'b'])
-        >>> pick_ab({'a': 1, 'b': 2, 'c': 4}) == {'a': 1, 'b': 2}
+        >>> pick_ab = pickgetter(["a", "b"])
+        >>> pick_ab({"a": 1, "b": 2, "c": 4}) == {"a": 1, "b": 2}
         True
 
     Args:
@@ -548,7 +543,7 @@ def retry(  # noqa: C901
     scale=2.0,
     jitter=0,
     exceptions=(Exception,),
-    on_exception=None
+    on_exception=None,
 ):
     """
     Decorator that retries a function multiple times if it raises an exception with an optional
@@ -584,10 +579,12 @@ def retry(  # noqa: C901
 
         >>> @retry(attempts=3, delay=0)
         ... def do_something():
-        ...     print('something')
-        ...     raise Exception('something went wrong')
-        >>> try: do_something()
-        ... except Exception: print('caught something')
+        ...     print("something")
+        ...     raise Exception("something went wrong")
+        >>> try:
+        ...     do_something()
+        ... except Exception:
+        ...     print("caught something")
         something
         something
         something
@@ -616,7 +613,7 @@ def retry(  # noqa: C901
             and (len(jitter) != 2 or not all(isinstance(jit, number_types) for jit in jitter))
         )
     ):
-        raise ValueError("jitter must be a number greater than 0 or a 2-item tuple of " "numbers")
+        raise ValueError("jitter must be a number greater than 0 or a 2-item tuple of numbers")
 
     if not isinstance(exceptions, tuple) or not all(
         issubclass(exc, Exception) for exc in exceptions
